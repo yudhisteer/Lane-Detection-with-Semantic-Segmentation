@@ -1,4 +1,13 @@
-# Lane-Detection-with-Semantic-Segmentation
+# Lane Detection with Semantic Segmentation
+
+## Methods
+
+## Abstract
+
+## Dataset(s)
+
+## Plan of Action
+1. 
 
 
 ## Principles of Convolutional Neural Network

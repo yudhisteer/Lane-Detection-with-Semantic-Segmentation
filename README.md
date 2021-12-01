@@ -19,6 +19,22 @@ Conceptually, a CNNs earlier layers extract **low level features such as edges**
 
 That can get computationally intensive. So pooling layers, which appear after Conv 1 and again after Conv 2 are used to reduce the number of computations. **Pooling is a methodology to reduce the number of pixels in the image while maintaining the features of the image and often enhancing those features**.
 
+### 1.1 Convolutions
+
+### 1.2 Strides
+
+### 1.3 Padding
+
+### 1.4 Pooling
+
+### 1.5 Convolutions
+
+### 1.6 Upsampling
+
+### 1.7 Unpooling
+
+### 1.8 Transposed Convolutions
+
 
 ## 2. Image Segmentation
 Instead of locating an object within a rectangular bounding box, segmentation instead figures out the pixels that make up that object. In the image below, we have different objects(cars, humans, road,...) and instead of drawing bounding boxes, we've colored the image to denote each of the detected objects. We can then subdivide the image into segments, and these segments can help identify individual objects within the image. 
@@ -42,4 +58,27 @@ With instance segmentation, even objects of the same type are treated as differe
 
 ![image](https://user-images.githubusercontent.com/59663734/135027680-bc577182-7356-4266-8020-f2d85149bd30.png)
 
-For instance segmentation, each instance of a person is identified as a separate segment. **Multiple objects of the same class are regarded as separate segments.** though they all belong to the same class - Vehicle. One popular algorithm that solves instance segmentation is **Mask R-CNN. **
+For instance segmentation, each instance of a person is identified as a separate segment. **Multiple objects of the same class are regarded as separate segments.** though they all belong to the same class - Vehicle. One popular algorithm that solves instance segmentation is **Mask R-CNN.**
+
+
+## 3. CNN Architectures
+
+### 3.1 U-Net
+
+### 3.2 Segnet
+
+### 3.3 FCN
+
+### 3.4 Deeplab
+
+### 3.5 Mask R-CNN
+
+
+
+
+
+
+
+
+
+

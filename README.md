@@ -9,6 +9,7 @@
 ## Plan of Action
 1. Principles of Convolutional Neural Network
 2. Image Segmentation
+3. CNN Architectures
 
 
 ## 1. Principles of Convolutional Neural Network

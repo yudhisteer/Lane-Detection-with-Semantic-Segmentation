@@ -21,6 +21,9 @@ That can get computationally intensive. So pooling layers, which appear after Co
 
 ### 1.1 Convolutions
 
+![image](https://user-images.githubusercontent.com/59663734/144384576-9aa6f4d8-eacf-4216-8ecf-df8911001a0a.png)
+
+
 ### 1.2 Strides
 
 ### 1.3 Padding

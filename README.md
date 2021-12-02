@@ -21,8 +21,7 @@ That can get computationally intensive. So pooling layers, which appear after Co
 
 ### 1.1 Convolutions
 
-![image](https://user-images.githubusercontent.com/59663734/144384576-9aa6f4d8-eacf-4216-8ecf-df8911001a0a.png)
-
+![image](https://user-images.githubusercontent.com/59663734/144385155-3ce66cf5-91c3-4ea8-8cd4-53dfde180b6f.png)
 
 ### 1.2 Strides
 
@@ -42,8 +41,7 @@ That can get computationally intensive. So pooling layers, which appear after Co
 ## 2. Image Segmentation
 Instead of locating an object within a rectangular bounding box, segmentation instead figures out the pixels that make up that object. In the image below, we have different objects(cars, humans, road,...) and instead of drawing bounding boxes, we've colored the image to denote each of the detected objects. We can then subdivide the image into segments, and these segments can help identify individual objects within the image. 
 
-![image](https://user-images.githubusercontent.com/59663734/135024588-0e947061-3db1-4b6f-9105-bdb417941a6f.png)
-                                   (Image by Analytics Vidhya)
+![image](https://user-images.githubusercontent.com/59663734/144401131-d1342cf6-46dc-4c42-bc5e-85875c446656.png)
 
 
 There are two types of image segmentation, **semantic segmentation** and **instance segmentation.**
@@ -52,14 +50,14 @@ There are two types of image segmentation, **semantic segmentation** and **insta
 
 With semantic segmentation, all objects of the same type form a single classification. The image below has highlighted all vehicles as one item for example. The word semantic refers to **meaning** so all parts of the image that have the **same meaning**, and in this case all vehicles, are grouped into the same segment. 
 
-![image](https://user-images.githubusercontent.com/59663734/135026536-7c043100-df0b-4199-a946-8f4f8cb56350.png)
+![image](https://user-images.githubusercontent.com/59663734/144401257-c736ee05-fecb-499c-ae13-89454b6abb41.png)
 
 In semantic segmentation, all objects of the same class are regarded as one segment. **Each pixel is usually associated with a class.** For example, all persons in an image are treated as one segment, cars as another segment and so on. Popular machine learning models that solve semantic segmentation are: **Fully Convolutional Neural Networks, U-net, DeepLab, ...**
 
 ### 2.2 Instance Segmentation
 With instance segmentation, even objects of the same type are treated as different objects. We have seven distinct vehicles in the image below, and we've colored them differently to highlight this. You can think of each vehicle as a separate instance of a vehicle. 
 
-![image](https://user-images.githubusercontent.com/59663734/135027680-bc577182-7356-4266-8020-f2d85149bd30.png)
+![image](https://user-images.githubusercontent.com/59663734/144401435-8be660c0-f6e3-4a8b-b1a0-11c8eb6bb607.png)
 
 For instance segmentation, each instance of a person is identified as a separate segment. **Multiple objects of the same class are regarded as separate segments.** though they all belong to the same class - Vehicle. One popular algorithm that solves instance segmentation is **Mask R-CNN.**
 

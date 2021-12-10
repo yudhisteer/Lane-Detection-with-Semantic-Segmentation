@@ -103,7 +103,7 @@ To sum up:
 </p>
 
 
-### 1.5 Convolutions
+### 1.5 CNN
 
 ### 1.6 Upsampling
 

@@ -56,9 +56,8 @@ To sum up:
 - The find these patterns by doing convolution, i.e, a matrix multiplication between the image and the filter
 - Values of our filters or weights are learned by our NN through backpropagation
 
-### 1.2 Strides
 
-### 1.3 Padding
+### 1.2 Padding
 For the earlier example, when we have a ```5x5``` input image and we do convolution with a ```3x3``` filter then the size of our feature map is reduced to ```3x3```. There are two downsides of the convolutional operation:
 
 1. With each convolution our inputs will shrink constantly and our feature map will be too small to contain important features - ```shrinking output problem```.
@@ -72,10 +71,10 @@ To solve the above two problems, we need to pad the image by an additional borde
 
 But how do we know how much padding should we use?
 
-#### 1.3.1 Valid Padding
-It implies no padding at all. The input image is left in its valid/unaltered shape. The resulting feature map uses the formula ```n-f+1 x n-f+1```. 
+#### 1.2.1 Valid Padding
+It implies no padding at all - ```p = 0```. The input image is left in its valid/unaltered shape. The resulting feature map uses the formula ```n-f+1 x n-f+1```. 
 
-#### 1.3.2 Same Padding
+#### 1.2.2 Same Padding
 In this case, we add ```p``` padding layers such that the output image has the same dimensions as the input image. We know our feature map will be of size ```n-f+1+2p x n-f+1+2p```. To know the value of our padding we need to do the following operation: ```n-f+1+2p = n```. We make p the subject of formula and we get ```p = (f-1)/2```. We observe that the padding size depends only on the size of our kernel and not on our input image. So for a ```3x3``` kernel we using a padding = ```1``` and for a ```5x5``` kernel we use a padding = ```2```. From the paddding formula, it is better we keep out kernel size an odd number  since then it will be divisible by 2. 
 
 To sum up:
@@ -83,8 +82,26 @@ To sum up:
  - With zero padding, every pixel of the image is visited the same number of times.
  - Padding gives similar importance to the edges and the center.
 
+### 1.3 Strides
+Stride specifies how much we move the convolution filter at each step. For the earlier example we have been using a stride of ```1``` where we moved our filter 1 pixel to the right and 1 pixel down until we reach the bottom right corner. We can use a stride ```2``` if we want less overlap with our receptive fields. However, this will make our receptive smaller skipping important locations. 
+
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/145621709-878854c8-29c1-468a-a243-aa1785703d6f.gif" />
+</p>
+
+To rectify our formula, suppose we have an inout image of size ```n```, padding ```p```, filter size ```f``` and stride ```s``` then the dimension of the feature map is: ```((n+2p-f)/s)+1 x ((n+2p-f)/s)+1```.
+
+To sum up:
+
+- The large the strides are, the less of our image will be covered by the filter. However, the computation will be faster.
+- Stride determines how the filter scans the image.
 
 ### 1.4 Pooling
+
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/145624189-d194ab55-8372-4b52-a87b-3d6a0e6943ce.png" />
+</p>
+
 
 ### 1.5 Convolutions
 
@@ -130,6 +147,11 @@ For instance segmentation, each instance of a person is identified as a separate
 ### 3.4 Deeplab
 
 ### 3.5 Mask R-CNN
+
+## Conclusion
+
+## References
+1. https://towardsdatascience.com/applied-deep-learning-part-4-convolutional-neural-networks-584bc134c1e2
 
 
 

@@ -137,7 +137,7 @@ Up-sampling has the opposite effect of pooling. Given a ```lower``` resolution i
   <img src= "https://user-images.githubusercontent.com/59663734/145671294-c40214d2-a870-41de-842b-7f74a7b38851.png" />
 </p>
 
-
+### 1.6 Transposed Convolutions
 
 ### 1.6 CNN
 
@@ -145,7 +145,7 @@ Up-sampling has the opposite effect of pooling. Given a ```lower``` resolution i
 
 ### 1.7 Unpooling
 
-### 1.8 Transposed Convolutions
+
 
 
 ## 2. Image Segmentation

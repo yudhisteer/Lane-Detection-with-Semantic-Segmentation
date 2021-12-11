@@ -131,7 +131,11 @@ To sum up:
 - Pooling reduces the height and width of our feature map but keeping the depth constant.
 
 ### 1.5 Upsampling
+Up-sampling has the opposite effect of pooling. Given a ```lower``` resolution image, up-sampling has a goal of outputting one that has ```higher``` resolution although it may not result in a perfect image. 
 
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/145671294-c40214d2-a870-41de-842b-7f74a7b38851.png" />
+</p>
 
 
 

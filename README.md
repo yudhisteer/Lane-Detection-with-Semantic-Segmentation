@@ -13,11 +13,7 @@
 
 
 ## 1. Principles of Convolutional Neural Network
-Conceptually, a CNNs earlier layers extract **low level features such as edges**. Later layers use those lower level features to extract **higher level features such as shapes**. The image is fed in through one or more layers represented in this diagram as Conv 1 and Conv 2. Each layer contains multiple filters, which are represented in the diagram as the stacks of orange rectangles. **Each filter can extract features from the image.** And when those features are matched to labels, we then have the basis of a model that can classify a picture. There are often many filters in each layer, so at each layer, we pass the image through each filter. For example, if there are 64 filters in the first layer Conv 1, then effectively 64 filtered copies of the image have passed to the second layer. And if that had 64 filters, then 64 times 64 copies of the image have passed forward. 
 
-![image](https://user-images.githubusercontent.com/59663734/135028355-56076b43-35fb-4aa7-8ac7-6718984e7544.png)
-
-That can get computationally intensive. So pooling layers, which appear after Conv 1 and again after Conv 2 are used to reduce the number of computations. **Pooling is a methodology to reduce the number of pixels in the image while maintaining the features of the image and often enhancing those features**.
 
 ### 1.1 Convolutions
 On the left side we have our input image of size ```5x5```. We assume we normalized our pixel values such that ```0``` represents ```black``` and ```1``` represents ```white```. We then have a convolutional ```filter``` of size ```3x3``` on the right also called a ```kernel```. We perform an ```element-wise matrix multiplication``` by sliding the kernel over our input image from the top left and sum the result. Our output will produce a ```feature map```. 
@@ -184,17 +180,25 @@ With this computation, we can see that some of the values in the output are infl
 </p>
 
 
-An issue which arises with Transposed Convolution is for output upsampling images to have a pattern resembling a ```checkerboard``` and this happens because when we upsample with a filter, some pixels are influenced much more heavily while the ones around it are not.
+An issue which arises with Transposed Convolution is the output to have a pattern resembling a ```checkerboard``` and this happens because when we upsample with a filter, some pixels are influenced much more heavily while the ones around it are not.
 
 
 <p align="center">
   <img src= "https://user-images.githubusercontent.com/59663734/145688277-5b38ef7e-9ac2-431d-b44d-cbfb92e33183.png" />
 </p>
 
+### 1.6 Dilated Convolution (Atrous Convolution)
 
 
-### 1.6 CNN
+### 1.7 CNN
+Conceptually, a CNN's earlier layers extract **low level features such as edges**. Later layers use those lower level features to extract **higher level features such as shapes**. The image is fed in through one or more layers represented in this diagram as Conv 1 and Conv 2. Each layer contains multiple filters, which are represented in the diagram as the stacks of orange rectangles. **Each filter can extract features from the image.** And when those features are matched to labels, we then have the basis of a model that can classify a picture. There are often many filters in each layer, so at each layer, we pass the image through each filter. For example, if there are 64 filters in the first layer Conv 1, then effectively 64 filtered copies of the image have passed to the second layer. And if that had 64 filters, then 64 times 64 copies of the image have passed forward. 
 
+![image](https://user-images.githubusercontent.com/59663734/135028355-56076b43-35fb-4aa7-8ac7-6718984e7544.png)
+
+That can get computationally intensive. So pooling layers, which appear after Conv 1 and again after Conv 2 are used to reduce the number of computations. **Pooling is a methodology to reduce the number of pixels in the image while maintaining the features of the image and often enhancing those features**.
+
+
+### 1.8 Batch Normalization
 
 
 

@@ -176,12 +176,13 @@ In max unpooling we remember the spatial information from max pooling. That is, 
 
 #### 1.5.5 Transposed Convolutions
 
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/145682257-19c09039-59e5-45c1-b095-cb93a62b36e7.png" />
+</p>
+
+
 
 ### 1.6 CNN
-
-
-
-### 1.7 Unpooling
 
 
 

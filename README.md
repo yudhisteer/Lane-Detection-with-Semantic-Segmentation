@@ -257,10 +257,24 @@ When doing convolution we will output a 2D layer. And before stacking these laye
 
 The values in our filters are the weights which the NN will learn. With the bias we have ```28``` parameters to learn in a ```3x3``` filter. It is important to note here that no matter how big our picture is, ```1000x1000``` or ```5000x5000```, the number of parameters will still remain ```28``` for one filter. The advantage of this is what makes CNN less prone to overfitting. Once we learn 10 feature detectors that work, we could apply this to very large images and the number of parameters will still remain fixed.
 
-#### 1.7.3 Simple CNN Architecture: LeNet-5
+#### 1.7.3 Simple CNN Architecture
+We will explore a simple CNN architecture similar to the LeNet-5 CNN architecture used on large scale to automatically classify hand-written digits on bank cheques in the United States.
 
+Our architecture has two parts: ```feature extraction``` and ```classification```. In our Feature Extraction part we have two layers:**Layer 1**and **Layer 2**. In layer 1, we have our ```32x32``` image on which we apply ```6``` filters of size ```5x5``` with stide ```1```. This result in a ```28x28x6``` feature map. We then perform max-pooling with a window size of ```2x2``` and tride ```2``` which shrinks our height and width but the depth stays unchanged. We observe that as we go deeper in our CNN our height and width decreases but our depth, the number of channels, increases. 
 
+In layer 2, we again perform a convolution and max-pooling with the same parameters which output a ```5x5x16``` feature map. We flatten our 3D feature map which contains ```400``` units(5x5x16). It is then passed to the Fully Connected layer of 120 units and again to another of ```84``` units to end in a softmax function with ```10``` units since we have 10 classes to predict.
 
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/145714004-217fc3e2-1cee-40bc-835d-63e9dd307080.png" />
+</p>
+
+Below shows the number of parameters and the activation size of the feature maps:
+
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/145714449-4793fdde-44ce-462b-a07b-a44414fdae03.png" />
+</p>
+
+We observe that the activation size decreases gradually and most of the parameters are found in the fully connected layer. Max-pooling does not have any learnable parameters and the convolutional layers have fewer parameters compated to the FC.
 
 
 

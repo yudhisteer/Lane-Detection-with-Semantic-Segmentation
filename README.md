@@ -14,7 +14,6 @@
 
 ## 1. Principles of Convolutional Neural Network
 
-
 ### 1.1 Convolutions
 On the left side we have our input image of size ```5x5```. We assume we normalized our pixel values such that ```0``` represents ```black``` and ```1``` represents ```white```. We then have a convolutional ```filter``` of size ```3x3``` on the right also called a ```kernel```. We perform an ```element-wise matrix multiplication``` by sliding the kernel over our input image from the top left and sum the result. Our output will produce a ```feature map```. 
 
@@ -23,7 +22,7 @@ At a particular time ```t```, when our kernel is over our input image, the area 
 The operation can be understood by the animation below:
 
 <p align="center">
-  <img src= "https://user-images.githubusercontent.com/59663734/145466555-bac3ed84-1c6a-4f0f-921c-d5aa2cd8d9e9.gif" />
+  <img src= "https://user-images.githubusercontent.com/59663734/145704667-8223d306-6c6c-49b1-958b-81df2cb3fca4.gif" />
 </p>
 
 The example here represents the image as 2D but our image will be 3D as we have our height, width and depth where the latter represents the ```3``` color channels of our image - ```RGB```. Since our image is 3D, our kernel also is 3D with its depth of the same dimension as the input image, that is, ```3```. We perform the same convolutional operation as on our 2D image and the matri multiplication will still result into a scalar. That is, our feature map will result into  ```n x n x 1``` dimension. Since we will have a number of filters passing onto our input image, our resulted feature map will be of size ```n x n x #filters```. What happens is that with each filter, we create a feature map and with a number of filters, the feature maps are stacked along the depth dimension.

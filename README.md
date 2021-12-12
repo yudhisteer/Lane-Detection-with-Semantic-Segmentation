@@ -248,7 +248,7 @@ Whatver the number of channel of our input, when applying a filter with the same
 </p>
 
 
-#### 1.7.1 One Layer of CNN
+#### 1.7.2 One Layer of CNN
 When doing convolution we will output a 2D layer. And before stacking these layers, we will add a ```bias, b``` which is a Real Number and with broadcasting operation we will add this number to all the 27 parameters in our ```3x3``` filter. We will then perform a non-linearity activation function - ReLu -  of this 2D object to get a ```3x3``` output. It is these processed 2D outputs that we stack on each other to form our 3D feature map. 
 
 <p align="center">
@@ -256,6 +256,14 @@ When doing convolution we will output a 2D layer. And before stacking these laye
 </p>
 
 The values in our filters are the weights which the NN will learn. With the bias we have ```28``` parameters to learn in a ```3x3``` filter. It is important to note here that no matter how big our picture is, ```1000x1000``` or ```5000x5000```, the number of parameters will still remain ```28``` for one filter. The advantage of this is what makes CNN less prone to overfitting. Once we learn 10 feature detectors that work, we could apply this to very large images and the number of parameters will still remain fixed.
+
+#### 1.7.3 Simple CNN Architecture: LeNet-5
+
+
+
+
+
+
 
 
 

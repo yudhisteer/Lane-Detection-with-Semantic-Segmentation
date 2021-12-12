@@ -260,7 +260,7 @@ The values in our filters are the weights which the NN will learn. With the bias
 #### 1.7.3 Simple CNN Architecture
 We will explore a simple CNN architecture similar to the LeNet-5 CNN architecture used on large scale to automatically classify hand-written digits on bank cheques in the United States.
 
-Our architecture has two parts: ```feature extraction``` and ```classification```. In our Feature Extraction part we have two layers:**Layer 1**and **Layer 2**. In layer 1, we have our ```32x32``` image on which we apply ```6``` filters of size ```5x5``` with stide ```1```. This result in a ```28x28x6``` feature map. We then perform max-pooling with a window size of ```2x2``` and tride ```2``` which shrinks our height and width but the depth stays unchanged. We observe that as we go deeper in our CNN our height and width decreases but our depth, the number of channels, increases. 
+Our architecture has two parts: ```feature extraction``` and ```classification```. In our Feature Extraction part we have two layers: **Layer 1** and **Layer 2**. In layer 1, we have our ```32x32``` image on which we apply ```6``` filters of size ```5x5``` with stide ```1```. This result in a ```28x28x6``` feature map. We then perform max-pooling with a window size of ```2x2``` and tride ```2``` which shrinks our height and width but the depth stays unchanged. We observe that as we go deeper in our CNN our height and width decreases but our depth, the number of channels, increases. 
 
 In layer 2, we again perform a convolution and max-pooling with the same parameters which output a ```5x5x16``` feature map. We flatten our 3D feature map which contains ```400``` units(5x5x16). It is then passed to the Fully Connected layer of 120 units and again to another of ```84``` units to end in a softmax function with ```10``` units since we have 10 classes to predict.
 
@@ -282,15 +282,40 @@ There are two advantages of using a convolutoonal layer before using a FC compar
 1. Parameter Sharing
 2. Sparsity of Connections
 
-#### 1. Parameter Sharing
+##### 1. Parameter Sharing
 From the table above, we find that the activation size of the input image is ```3072``` and suppose we needed to pass it into a layer with ```4704``` units then the total number of parameters to be learnt is 3072x4704 which is approx ```14 million```. And if we had larger images then our weight matrix will be increasingly large. However when using a ConvNet, we observe that the number of parameters is only 456 which is significantly smaller. The reason of the small number of parameters in a ConvNet is due to parameter sharing whereby a feature detector can be applied on different parts of an image. We don't really need a separate detector for the upper left corner of an image and another for the bottom right. We use the same detector all across the image during convolution and that greatly reduces our number of parameters.
 
-#### 2. Sparsity of Connections
+##### 2. Sparsity of Connections
 When performing convolution for a receptive field of a filter, the pixel values outside that window does not have any effect. In other words, the output value of an index in our feature map depends only on the comvoluton performed in that specific receptive field onto our image and the other pixels produces no interference. In that way, our ConvNet has less parameters which allows it to be trained with smaller training set and less prone to overfitting.   
 
 Additionally, CNN are good at capturing ```translation invariance```. That is a picture of a dog shifted to the right will still be classfied as a dog even though it was not trained on such pictures. Convolutional structure help the NN encode that an image shifted will have similar features therefore be labeled similarly. 
 
 ### 1.8 Batch Normalization
+
+The idea is that, instead of just normalizing the inputs to the network, we normalize the inputs to layers within the network. It’s called “batch” normalization because during training, we normalize each layer’s inputs by using the mean and variance of the values in the current mini-batch (usually zero mean and unit variance). Batch normalization optimizes network training. It has been shown to have several benefits:
+
+- it stabilises optimisation allowing much higher learning rates and faster training
+- it injects noise (through the batch statistics) improving generalisation
+- it reduces sensitivity to weight initialisation
+- it interacts with weight decay to control the learning rate dynamics
+
+
+David C Page performed an experiment to demonstrate the effect of batch norm on optimisation stability. He trained a simple, 8-layer, unbranched conv net, with and without batch norm, on CIFAR10. The result is shown below:
+
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/145724597-77a0df6c-150e-42c1-b9df-9d9c2fe73831.png" />
+</p>
+
+It can be seen that the network with batch norm is stable over a much larger range of learning rates. The ability to use high learning rates allows training to proceed much more rapidly for the model with batch norm.
+
+Batch norm has several drawbacks:
+
+- it's slow (although node fusion can help)
+- it's different at training and test time and therefore fragile
+- it's ineffective for small batches and various layer types
+- it has multiple interacting effects which are hard to separate.
+
+
 
 
 
@@ -338,6 +363,7 @@ For instance segmentation, each instance of a person is identified as a separate
 3. https://towardsdatascience.com/a-comprehensive-introduction-to-different-types-of-convolutions-in-deep-learning-669281e58215
 4. https://medium.com/hitchhikers-guide-to-deep-learning/10-introduction-to-deep-learning-with-computer-vision-types-of-convolutions-atrous-convolutions-3cf142f77bc0
 5. https://towardsdatascience.com/types-of-convolutions-in-deep-learning-717013397f4d
+6. https://towardsdatascience.com/batch-normalization-8a2e585775c9
 
 
 

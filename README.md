@@ -271,7 +271,7 @@ In layer 2, we again perform a convolution and max-pooling with the same paramet
 Below shows the number of parameters and the activation size of the feature maps:
 
 <p align="center">
-  <img src= "https://user-images.githubusercontent.com/59663734/145714449-4793fdde-44ce-462b-a07b-a44414fdae03.png" />
+  <img src= "https://user-images.githubusercontent.com/59663734/145714857-b5f0ac72-536f-4253-9ab2-8ba271e3ae82.png" />
 </p>
 
 We observe that the activation size decreases gradually and most of the parameters are found in the fully connected layer. Max-pooling does not have any learnable parameters and the convolutional layers have fewer parameters compated to the FC.

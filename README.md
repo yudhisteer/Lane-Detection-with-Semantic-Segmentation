@@ -188,6 +188,23 @@ An issue which arises with Transposed Convolution is the output to have a patter
 </p>
 
 ### 1.6 Dilated Convolution (Atrous Convolution)
+Dilated convolutions are a way of increasing the receptive field of the network. These helps in understanding the overall picture rather than finer details. Thus, they cut the compute cost and provide a global view of the network in much lesser depth. Intuitively, dilated convolutions ```inflate``` the kernel by inserting spaces between the kernel elements. This additional parameter ```dilation rate``` indicates how much we want to widen the kernel. 
+
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/145702734-f3734265-0802-4285-bac7-722a309b5aed.gif" />
+</p>
+
+ A ```3x3``` kernel with a dilation rate of ```2``` will have the same field of view as a ```5x5``` kernel, while only using ```9``` parameters. This delivers a wider field of view at the same computational cost. We use them if we need a wide field of view and cannot afford multiple convolutions or larger kernels.
+
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/145702888-01453567-025e-421a-ac6b-bea0b499af17.png" />
+</p>
+
+To sum up:
+
+- Dilated convolution are very effective in segmentation tasks.
+- A dilatation rate of 1 means normal convolution. 
+- With a dilation rate > 1, we increase the receptive field which helps in memory and efficiency. 
 
 
 ### 1.7 CNN
@@ -244,6 +261,8 @@ For instance segmentation, each instance of a person is identified as a separate
 1. https://towardsdatascience.com/applied-deep-learning-part-4-convolutional-neural-networks-584bc134c1e2
 2. https://medium.com/@marsxiang/convolutions-transposed-and-deconvolution-6430c358a5b6
 3. https://towardsdatascience.com/a-comprehensive-introduction-to-different-types-of-convolutions-in-deep-learning-669281e58215
+4. https://medium.com/hitchhikers-guide-to-deep-learning/10-introduction-to-deep-learning-with-computer-vision-types-of-convolutions-atrous-convolutions-3cf142f77bc0
+5. https://towardsdatascience.com/types-of-convolutions-in-deep-learning-717013397f4d
 
 
 

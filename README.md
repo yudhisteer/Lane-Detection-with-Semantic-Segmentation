@@ -299,14 +299,48 @@ The idea is that, instead of just normalizing the inputs to the network, we norm
 - it reduces sensitivity to weight initialisation
 - it interacts with weight decay to control the learning rate dynamics
 
-
 David C Page performed an experiment to demonstrate the effect of batch norm on optimisation stability. He trained a simple, 8-layer, unbranched conv net, with and without batch norm, on CIFAR10. The result is shown below:
 
 <p align="center">
   <img src= "https://user-images.githubusercontent.com/59663734/145724597-77a0df6c-150e-42c1-b9df-9d9c2fe73831.png" />
 </p>
 
+
 It can be seen that the network with batch norm is stable over a much larger range of learning rates. The ability to use high learning rates allows training to proceed much more rapidly for the model with batch norm.
+
+#### 1.8.1 Covariate Shift
+
+To understand Batch Normalization, we can take the example of a single layer and a single activation unit with two input variables. We want to determine, based on the size and fur color of cats, if an image is a picture of a cat or not. 
+
+We obeserve that the data of the size of cats is normally distributed around a midsize example with very few extremely small or extremely large examples. However, the distribution of fur color skews a little bit towards higher values with a much higher mean and lower standard deviation. The higher value can represent darker fur colors. It is important to note here that fur color and size does not have any correlation so we cannot really compare their values. 
+
+The facts that we have two different distributions for our two variables impact the way our NN will learn. If it's trying to get to this local minimum and it has these very different distributions across inputs, this cost function will be ```elongated```. So changes to the weights relating to each of the inputs will have kind of a different effect of varying impact on this cost function. And this makes training fairly difficult, makes it slower and highly dependent on how the weights are initialized.
+
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/145762745-1363fa00-5ada-46ea-ae35-43e7a3aa513e.png" />
+</p>
+
+If a new training or test data has really light fur color, the state of distribution shifts or changes in some way. The form of the cost function would change too and the location of the minimum could also move. Even if the labels on our images of whether something is a cat or not has not changed. And this is known as ```covariate shift```. This happens often between training and test sets where precautions haven't been taken on how the data distribution is shifted. 
+
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/145764110-114e2e9a-97b2-408b-9b07-1797a7ab3766.png" />
+</p>
+
+
+When we normalized our input variables such that the distribution of the new input variables <a href="https://www.codecogs.com/eqnedit.php?latex=\large&space;x_{1}^{'}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\large&space;x_{1}^{'}" title="\large x_{1}^{'}" /></a> and <a href="https://www.codecogs.com/eqnedit.php?latex=\large&space;x_{2}^{'}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\large&space;x_{2}^{'}" title="\large x_{2}^{'}" /></a> will be much more similar with means equal to ```0``` and a standard deviation equal to ```1```. Then the cost function will also look **smoother** and more **balanced** across these two dimensions. And as a result training would actually be much easier and potentially much faster.
+
+Also, no matter how much the distribution of the raw input variables change, from training to test, the mean and standard deviation of the normalized variables will be normalized to the same place around a mean of ```0``` and a standard deviation of ```1```. For the training data, this is done using the ```batch statistics```. As we train each ```batch``` we take the mean and standard deviation and we shift it to be around ```0```, and standard deviation of ```1```. And for the test data we can actually look at the statistics that were gathered overtime through the training set and use those to center the test data to be closer to the training data. And using normalization, the effect of this covariate shift will be reduced significantly.
+
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/145765276-73d46981-df81-40f8-b303-269ce6028929.png" />
+</p>
+
+
+#### 1.8.2 Internal Covariate Shift
+
+
+
+
 
 Batch norm has several drawbacks:
 
@@ -316,7 +350,9 @@ Batch norm has several drawbacks:
 - it has multiple interacting effects which are hard to separate.
 
 
+To sum up:
 
+- Covariate shift shouldn't be a problem if we make sure that the distribution of our data set is similar to the task we are modeling. That is, the test set is similar to our training site in terms of how it's distributed.
 
 
 ## 2. Image Segmentation

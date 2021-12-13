@@ -337,22 +337,21 @@ Also, no matter how much the distribution of the raw input variables change, fro
 
 
 #### 1.8.2 Internal Covariate Shift
+The next dilemma we will face is experiencing covariate shift in internal layers of a Neural Network also known as ```Internal Covariate Shift```.
 
+Let's examine the activation output of this second hidden layer of the neural network and look at the second node. When training the model, all the weights that affect the activation value are updated. And consequently, the distribution of values contained in that activation changes in our influence over this course of training. This makes the training process difficult due to the shifts similar to the input variable distribution shifts we saw earlier. 
 
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/145769687-6c871ef7-a442-45a7-9a9c-1e5a8efdd6a2.png" />
+</p>
 
-
-
-Batch norm has several drawbacks:
-
-- it's slow (although node fusion can help)
-- it's different at training and test time and therefore fragile
-- it's ineffective for small batches and various layer types
-- it has multiple interacting effects which are hard to separate.
+Batch normalization remedies the situation by normalizing all these internal nodes based on statistics calculated for each ```input batch``` in order to reduce the ```internal covariate shift```. And this has the added benefit of smoothing that cost function out and making the neural network easier to train and speeding up that whole training process.
 
 
 To sum up:
 
 - Covariate shift shouldn't be a problem if we make sure that the distribution of our data set is similar to the task we are modeling. That is, the test set is similar to our training site in terms of how it's distributed.
+- Batch normalization smooth the cost function and reduces the effect of internal covariate shift. It's used to speed up and stabilize training.
 
 
 ## 2. Image Segmentation

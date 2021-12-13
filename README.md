@@ -342,7 +342,7 @@ The next dilemma we will face is experiencing covariate shift in internal layers
 Let's examine the activation output of this second hidden layer of the neural network and look at the second node. When training the model, all the weights that affect the activation value are updated. And consequently, the distribution of values contained in that activation changes in our influence over this course of training. This makes the training process difficult due to the shifts similar to the input variable distribution shifts we saw earlier. 
 
 <p align="center">
-  <img src= "https://user-images.githubusercontent.com/59663734/145769687-6c871ef7-a442-45a7-9a9c-1e5a8efdd6a2.png" />
+  <img src= "https://user-images.githubusercontent.com/59663734/145771390-38e807a1-07cd-48bf-a2ca-5dde0b64ea6d.png" />
 </p>
 
 Batch normalization remedies the situation by normalizing all these internal nodes based on statistics calculated for each ```input batch``` in order to reduce the ```internal covariate shift```. And this has the added benefit of smoothing that cost function out and making the neural network easier to train and speeding up that whole training process.
@@ -399,6 +399,7 @@ For instance segmentation, each instance of a person is identified as a separate
 4. https://medium.com/hitchhikers-guide-to-deep-learning/10-introduction-to-deep-learning-with-computer-vision-types-of-convolutions-atrous-convolutions-3cf142f77bc0
 5. https://towardsdatascience.com/types-of-convolutions-in-deep-learning-717013397f4d
 6. https://towardsdatascience.com/batch-normalization-8a2e585775c9
+7. https://e2eml.school/batch_normalization.html
 
 
 

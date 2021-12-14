@@ -291,7 +291,27 @@ When performing convolution for a receptive field of a filter, the pixel values 
 Additionally, CNN are good at capturing ```translation invariance```. That is a picture of a dog shifted to the right will still be classfied as a dog even though it was not trained on such pictures. Convolutional structure help the NN encode that an image shifted will have similar features therefore be labeled similarly. 
 
 ### 1.8 Batch Normalization
+Before understanding Batch Norm, it is important we comprehend what is Normalization.
 
+#### 1.8.1 Normalization
+If we collect the data of all the activities of a single node in our layer for several iterations, we can actually constuct a distribution from that node's activities. The distribution need not be uniform and may not have a mean value of zero. Thefore, it is best if we normalize our distribution to make it as close to a Normal Distribution to have a mean of zero and a standard deviation of 1. The formula is:
+
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/146062008-fdbb2fde-b0c5-4423-aa42-466176ab343d.gif" />
+</p>
+
+It need not need to have a nice bell shape but atleast it will have a mean of zero and a standard deviation of 1.
+
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/146001319-6f70f9d9-4108-4372-b9ae-0c7324fc2564.png" />
+</p>
+
+
+
+
+
+
+#### 1.8.2 Importance of Batch Norm
 The idea is that, instead of just normalizing the inputs to the network, we normalize the inputs to layers within the network. It’s called “batch” normalization because during training, we normalize each layer’s inputs by using the mean and variance of the values in the current mini-batch (usually zero mean and unit variance). Batch normalization optimizes network training. It has been shown to have several benefits:
 
 - it stabilises optimisation allowing much higher learning rates and faster training
@@ -308,7 +328,7 @@ David C Page performed an experiment to demonstrate the effect of batch norm on 
 
 It can be seen that the network with batch norm is stable over a much larger range of learning rates. The ability to use high learning rates allows training to proceed much more rapidly for the model with batch norm.
 
-#### 1.8.1 Covariate Shift
+#### 1.8.3 Covariate Shift
 
 To understand Batch Normalization, we can take the example of a single layer and a single activation unit with two input variables. We want to determine, based on the size and fur color of cats, if an image is a picture of a cat or not. 
 
@@ -336,7 +356,7 @@ Also, no matter how much the distribution of the raw input variables change, fro
 </p>
 
 
-#### 1.8.2 Internal Covariate Shift
+#### 1.8.4 Internal Covariate Shift
 The next dilemma we will face is experiencing covariate shift in internal layers of a Neural Network also known as ```Internal Covariate Shift```.
 
 Let's examine the activation output of ```layer 1``` of the neural network and look at the second node. When training the model, all the weights that affect the activation value are updated. And consequently, the distribution of values contained in that activation changes in our influence over this course of training. This makes the training process difficult due to the shifts similar to the input variable distribution shifts we saw earlier. 
@@ -359,7 +379,12 @@ We start be calculating <a href="https://www.codecogs.com/eqnedit.php?latex=\lar
   <img src= "https://user-images.githubusercontent.com/59663734/145955178-edd9f9c8-47d6-4fff-ab2b-44819c6438ca.png" />
 </p>
 
-After we get the normalized value z-hat, we have parameters ```Beta```, which will be the ```shift factor``` and ```Gamma```, which will be the ```scale factor```, which are learned during training to ensure that the distribution to which we are transforming z is the optimal one for our task. After we completely normalize things to z-hat, we then rescale them based on these learned values, Gamma and Beta. This is the primary difference between **normalization of inputs** and **batch normalization**. With batch normalization we are not forcing the distribution to have zero mean and standard deviation of one every single time. It is after normalizing that we can go on and rescale things to an unnecessary task. Batch normalization gives us control over what that distribution will look like moving forward in the neural network. <a href="https://www.codecogs.com/eqnedit.php?latex=\large&space;{y}_{i}^{[l]}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\large&space;{y}_{i}^{[l]}" title="\large {y}_{i}^{[l]}" /></a> is what then goes into the activation function <a href="https://www.codecogs.com/eqnedit.php?latex=\large&space;{a}_{i}^{[l]}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\large&space;{a}_{i}^{[l]}" title="\large {a}_{i}^{[l]}" /></a>.
+After we get the normalized value z-hat, we have parameters ```Beta```, which will be the ```shift factor``` and ```Gamma```, which will be the ```scale factor```, which are learned during training to ensure that the distribution to which we are transforming z is the optimal one for our task. After we completely normalize things to z-hat, we then rescale them based on these learned values, Gamma and Beta. This is the primary difference between **normalization of inputs** and **batch normalization**. With batch normalization we are not forcing the distribution to have zero mean and standard deviation of one every single time. It is after normalizing that we can go on and rescale things to an unnecessary task. Batch normalization gives us control over what that distribution will look like moving forward in the neural network. Within each batch, the activities of each element are separately shifted and scaled so that they have a zero mean and unit variance within the batch.
+ <a href="https://www.codecogs.com/eqnedit.php?latex=\large&space;{y}_{i}^{[l]}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\large&space;{y}_{i}^{[l]}" title="\large {y}_{i}^{[l]}" /></a> is what then goes into the activation function <a href="https://www.codecogs.com/eqnedit.php?latex=\large&space;{a}_{i}^{[l]}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\large&space;{a}_{i}^{[l]}" title="\large {a}_{i}^{[l]}" /></a>.
+
+In summary: 
+
+_Batch normalization is an element-by-element shift (adding a constant) and scaling (multiplying by a constant) so that the mean of each element's values is zero and the variance of each element's values is one within a batch. It's typically inserted before the nonlinearity layer in a neural network._
 
 ##### Batch Norm for Testing
 During testing, we want to prevent different batches from getting different means and standard deviations because that can mean the same example, but in a different batch would yield different results because it was normalized differently due to the specific batch mean or specific batch standard deviation. Instead, we want to have stable predictions during test time. During testing, we use the ```running mean``` and ```standard deviation``` that was computed over the **entire training set**, and these values are now fixed after training.

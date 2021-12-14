@@ -339,13 +339,40 @@ Also, no matter how much the distribution of the raw input variables change, fro
 #### 1.8.2 Internal Covariate Shift
 The next dilemma we will face is experiencing covariate shift in internal layers of a Neural Network also known as ```Internal Covariate Shift```.
 
-Let's examine the activation output of this second hidden layer of the neural network and look at the second node. When training the model, all the weights that affect the activation value are updated. And consequently, the distribution of values contained in that activation changes in our influence over this course of training. This makes the training process difficult due to the shifts similar to the input variable distribution shifts we saw earlier. 
+Let's examine the activation output of ```layer 1``` of the neural network and look at the second node. When training the model, all the weights that affect the activation value are updated. And consequently, the distribution of values contained in that activation changes in our influence over this course of training. This makes the training process difficult due to the shifts similar to the input variable distribution shifts we saw earlier. 
 
 <p align="center">
-  <img src= "https://user-images.githubusercontent.com/59663734/145771390-38e807a1-07cd-48bf-a2ca-5dde0b64ea6d.png" />
+  <img src= "https://user-images.githubusercontent.com/59663734/145937702-8974f522-192f-40e1-9b43-500ebf459122.png" />
 </p>
 
 Batch normalization remedies the situation by normalizing all these internal nodes based on statistics calculated for each ```input batch``` in order to reduce the ```internal covariate shift```. And this has the added benefit of smoothing that cost function out and making the neural network easier to train and speeding up that whole training process.
+
+##### How does it work?
+Suppose we set our batch number equal to ```32``` and we need to normalize the output of node 1 of layer 1 shown below. <a href="https://www.codecogs.com/eqnedit.php?latex=\large&space;{z}_{i}^{[l]}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\large&space;{z}_{i}^{[l]}" title="\large {z}_{i}^{[l]}" /></a> represents the output from all the previous nodes.  Batch normalization considers every example <a href="https://www.codecogs.com/eqnedit.php?latex=\large&space;{z}_{i}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\large&space;{z}_{i}" title="\large {z}_{i}" /></a> in the batch. Since we have a batch of 32, we will have 32 <a href="https://www.codecogs.com/eqnedit.php?latex=\large&space;{z}_{i}s" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\large&space;{z}_{i}s" title="\large {z}_{i}s" /></a> where i represents the <a href="https://www.codecogs.com/eqnedit.php?latex=\large&space;i^{th}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\large&space;i^{th}" title="\large i^{th}" /></a> node and l represents the <a href="https://www.codecogs.com/eqnedit.php?latex=\large&space;l^{th}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\large&space;l^{th}" title="\large l^{th}" /></a> node.  From those 32 <a href="https://www.codecogs.com/eqnedit.php?latex=\large&space;z_{i}&space;s" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\large&space;z_{i}&space;s" title="\large z_{i} s" /></a>, we want to normalize it so that it has a mean of zero and a standard deviation of one. 
+
+
+
+#### Batch Norm for Training
+We start be calculating <a href="https://www.codecogs.com/eqnedit.php?latex=\large&space;\mu&space;_{z_{i}^{[l]}}^{}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\large&space;\mu&space;_{z_{i}^{[l]}}^{}" title="\large \mu _{z_{i}^{[l]}}^{}" /></a> which represents the mean of the batch of size 32. Then we also get the variance of the batch <a href="https://www.codecogs.com/eqnedit.php?latex=\large&space;\sigma&space;_{z_{i}^{[l]}}^{2}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\large&space;\sigma&space;_{z_{i}^{[l]}}^{2}" title="\large \sigma _{z_{i}^{[l]}}^{2}" /></a> from these 32 values. To normalize these z values to a mean of zero and a standard deviation of one, we subtract the mean and we divide by the square root of the variance which is the standard deviation. We also add an <a href="https://www.codecogs.com/eqnedit.php?latex=\large&space;\epsilon" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\large&space;\epsilon" title="\large \epsilon" /></a> here just to make sure that the denominator isn't zero. This is how we obtain <a href="https://www.codecogs.com/eqnedit.php?latex=\large&space;\hat{z}_{i}^{[l]}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\large&space;\hat{z}_{i}^{[l]}" title="\large \hat{z}_{i}^{[l]}" /></a>.
+
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/145955178-edd9f9c8-47d6-4fff-ab2b-44819c6438ca.png" />
+</p>
+
+After we get the normalized value z-hat, we have parameters ```Beta```, which will be the ```shift factor``` and ```Gamma```, which will be the ```scale factor```, which are learned during training to ensure that the distribution to which we are transforming z is the optimal one for our task. After we completely normalize things to z-hat, we then rescale them based on these learned values, Gamma and Beta. This is the primary difference between **normalization of inputs** and **batch normalization**. With batch normalization we are not forcing the distribution to have zero mean and standard deviation of one every single time. It is after normalizing that we can go on and rescale things to an unnecessary task. Batch normalization gives us control over what that distribution will look like moving forward in the neural network. <a href="https://www.codecogs.com/eqnedit.php?latex=\large&space;{y}_{i}^{[l]}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\large&space;{y}_{i}^{[l]}" title="\large {y}_{i}^{[l]}" /></a> is what then goes into the activation function <a href="https://www.codecogs.com/eqnedit.php?latex=\large&space;{a}_{i}^{[l]}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\large&space;{a}_{i}^{[l]}" title="\large {a}_{i}^{[l]}" /></a>.
+
+#### Batch Norm for Testing
+
+
+
+
+
+
+
+
+
+
+
 
 
 To sum up:

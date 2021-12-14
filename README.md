@@ -352,7 +352,7 @@ Suppose we set our batch number equal to ```32``` and we need to normalize the o
 
 
 
-#### Batch Norm for Training
+##### Batch Norm for Training
 We start be calculating <a href="https://www.codecogs.com/eqnedit.php?latex=\large&space;\mu&space;_{z_{i}^{[l]}}^{}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\large&space;\mu&space;_{z_{i}^{[l]}}^{}" title="\large \mu _{z_{i}^{[l]}}^{}" /></a> which represents the mean of the batch of size 32. Then we also get the variance of the batch <a href="https://www.codecogs.com/eqnedit.php?latex=\large&space;\sigma&space;_{z_{i}^{[l]}}^{2}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\large&space;\sigma&space;_{z_{i}^{[l]}}^{2}" title="\large \sigma _{z_{i}^{[l]}}^{2}" /></a> from these 32 values. To normalize these z values to a mean of zero and a standard deviation of one, we subtract the mean and we divide by the square root of the variance which is the standard deviation. We also add an <a href="https://www.codecogs.com/eqnedit.php?latex=\large&space;\epsilon" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\large&space;\epsilon" title="\large \epsilon" /></a> here just to make sure that the denominator isn't zero. This is how we obtain <a href="https://www.codecogs.com/eqnedit.php?latex=\large&space;\hat{z}_{i}^{[l]}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\large&space;\hat{z}_{i}^{[l]}" title="\large \hat{z}_{i}^{[l]}" /></a>.
 
 <p align="center">
@@ -361,12 +361,15 @@ We start be calculating <a href="https://www.codecogs.com/eqnedit.php?latex=\lar
 
 After we get the normalized value z-hat, we have parameters ```Beta```, which will be the ```shift factor``` and ```Gamma```, which will be the ```scale factor```, which are learned during training to ensure that the distribution to which we are transforming z is the optimal one for our task. After we completely normalize things to z-hat, we then rescale them based on these learned values, Gamma and Beta. This is the primary difference between **normalization of inputs** and **batch normalization**. With batch normalization we are not forcing the distribution to have zero mean and standard deviation of one every single time. It is after normalizing that we can go on and rescale things to an unnecessary task. Batch normalization gives us control over what that distribution will look like moving forward in the neural network. <a href="https://www.codecogs.com/eqnedit.php?latex=\large&space;{y}_{i}^{[l]}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\large&space;{y}_{i}^{[l]}" title="\large {y}_{i}^{[l]}" /></a> is what then goes into the activation function <a href="https://www.codecogs.com/eqnedit.php?latex=\large&space;{a}_{i}^{[l]}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\large&space;{a}_{i}^{[l]}" title="\large {a}_{i}^{[l]}" /></a>.
 
-#### Batch Norm for Testing
+##### Batch Norm for Testing
+During testing, we want to prevent different batches from getting different means and standard deviations because that can mean the same example, but in a different batch would yield different results because it was normalized differently due to the specific batch mean or specific batch standard deviation. Instead, we want to have stable predictions during test time. During testing, we use the ```running mean``` and ```standard deviation``` that was computed over the **entire training set**, and these values are now fixed after training.
+
+The expected value of those z values is the running mean and the square root of the variance of those z values is the standard deviation. We still have that Epsilon to prevent the denominator from going to zero. After that, we just follow the same process as you did in training and we feed these normalized values into the learn parameters and then the activation function. 
 
 
-
-
-
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/145992811-4c86a046-3149-4463-954d-6b97d4d886cd.gif" />
+</p>
 
 
 

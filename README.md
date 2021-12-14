@@ -364,7 +364,7 @@ After we get the normalized value z-hat, we have parameters ```Beta```, which wi
 ##### Batch Norm for Testing
 During testing, we want to prevent different batches from getting different means and standard deviations because that can mean the same example, but in a different batch would yield different results because it was normalized differently due to the specific batch mean or specific batch standard deviation. Instead, we want to have stable predictions during test time. During testing, we use the ```running mean``` and ```standard deviation``` that was computed over the **entire training set**, and these values are now fixed after training.
 
-The expected value, <a href="https://www.codecogs.com/eqnedit.php?latex=\large&space;E(z_{i}^{[l]})" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\large&space;E(z_{i}^{[l]})" title="\large E(z_{i}^{[l]})" /></a>, of those z values is the running mean and the square root of the variance of those z values, <a href="https://www.codecogs.com/eqnedit.php?latex=\large&space;{\sqrt{Var(z_{i}^{[l]})}}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\large&space;{\sqrt{Var(z_{i}^{[l]})}}" title="\large {\sqrt{Var(z_{i}^{[l]})}}" /></a>, is the standard deviation. We still have that Epsilon, <a href="https://www.codecogs.com/eqnedit.php?latex=\large&space;\epsilon" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\large&space;\epsilon" title="\large \epsilon" /></a>, to prevent the denominator from going to zero. After that, we just follow the same process as you did in training and we feed these normalized values into the learn parameters and then the activation function. 
+The expected value, <a href="https://www.codecogs.com/eqnedit.php?latex=\large&space;E(z_{i}^{[l]})" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\large&space;E(z_{i}^{[l]})" title="\large E(z_{i}^{[l]})" /></a>, of those z values is the running mean and the square root of the variance of those z values, <a href="https://www.codecogs.com/eqnedit.php?latex=\large&space;{\sqrt{Var(z_{i}^{[l]})}}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\large&space;{\sqrt{Var(z_{i}^{[l]})}}" title="\large {\sqrt{Var(z_{i}^{[l]})}}" /></a>, is the standard deviation. We still have that Epsilon, <a href="https://www.codecogs.com/eqnedit.php?latex=\large&space;\epsilon" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\large&space;\epsilon" title="\large \epsilon" /></a>, to prevent the denominator from going to zero. After that, we just follow the same process as we did in training and we feed these normalized values into the learn parameters and then the activation function. 
 
 
 <p align="center">
@@ -375,6 +375,8 @@ To sum up:
 
 - Covariate shift shouldn't be a problem if we make sure that the distribution of our data set is similar to the task we are modeling. That is, the test set is similar to our training site in terms of how it's distributed.
 - Batch normalization smooth the cost function and reduces the effect of internal covariate shift. It's used to speed up and stabilize training.
+- Batch norm introdues learnable shift and scale factors.
+- During tests, the running statistics from training are used.
 - In TensorFlow and PyTorch all we have to do is create a layer called batch norm, and then when our model is put into the test mode, the running statistics will be computed over the whole data set for us.
 
 

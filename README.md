@@ -427,14 +427,14 @@ Below is an example of a ```pixel map``` created for two classes. On the left we
   Classes Indices: [0 = Background, 1 = People]
 </p>
 
-#### 2.0.1 Image Segmentation Basic Architecture
+### 2.1 Image Segmentation Basic Architecture
  The high level architecture for an image segmentation algorithm consists of an ```encoder``` and a ```decoder```.
  
- ##### 1. Input Image
+ #### 1. Input Image
  We start with our colored input image of size ```224 x 224 x 3``` where ```3``` represents the three RGB channel. The image is then process with an encoder. 
  
- ##### 2. Encoder
-An encoder is a ```feature extractor```. One common method to extract features is one which we explored before - ```CNN```. The encoder extracts features from the image into a feature map. The earlier layers extract low level features such as lines and these lower level features are successfully aggregated into higher level features such as eyes and ears. The aggregation of successful higher level features is done with the help of downsampling. You can think of downsampling as what happens when your computer tries to represent an image with fewer pixels. Like when you're on a video chat with a friend and the internet connection is slow, you might see a grainier view of the other person. But still through the high level features, you can still recognize who they are. 
+ #### 2. Encoder
+An encoder is a ```feature extractor```. One common method to extract features is one which we explored before - ```CNN```. Through a series of convolutio nand pooling, the CNN extract features and return a feature map. The **earlier layers** extract **low level features** such as **lines** and these lower level features are successfully aggregated into **higher level features** such as **eyes** and **ears**. The aggregation of successful higher level features is done with the help of ```downsampling``` or ```pooling```. That is, the CNN will represent an image with fewer pixels.
  
  
 <p align="center">
@@ -442,18 +442,12 @@ An encoder is a ```feature extractor```. One common method to extract features i
 </p>
 
  
-  ##### 3. Decoder
-  
-  ##### 4. Pixel Map
- 
- 
- 
- 
- 
- 
- 
+  #### 3. Decoder
+  Whereas before in our CNN we had a Fully Connected layers to do a classification based on the learned filters, the image segmentation architecture will take the ```downsampled feature map``` and feed it to a decoder. The decoder's task, which is also a CNN, is to take the features that were extracted by the encoder and work on producing the models output or prediction. The decoder assigns **intermediate class labels** to each pixel of the feature map, and then **upsamples** the image to slowly add back the fine grained details of the original image. The decoder then assigns more fine grained intermediate class labels to the upsamples pixels and repeats this process until the images upsampled back to its original input dimensions. The final predicted image also has the final class labels assigned to each pixel. This then gives a **pixel wise labeled map**.
 
-
+  #### 4.  Pixel-wise Labeled Map
+   The pixel wise labeled map will be the size of the original image - 224 x 224 - with the **third dimension** being the **number of classes**. 
+ 
 To sum up:
 - Encoder is a CNN without its Fully Connected layers.
 - Aggregates low level features to high level features.
@@ -462,15 +456,17 @@ To sum up:
 
 There are two types of image segmentation, **semantic segmentation** and **instance segmentation.**
 
-### 2.1 Semantic Segmentation
+### 2.2 Semantic Segmentation
 
-With semantic segmentation, all objects of the same type form a single classification. The image below has highlighted all vehicles as one item for example. The word semantic refers to **meaning** so all parts of the image that have the **same meaning**, and in this case all vehicles, are grouped into the same segment. 
+With semantic segmentation, all objects of the same type form a single classification. The image below has highlighted all vehicles as one item. The word semantic refers to **meaning** so all parts of the image that have the **same meaning**, and in this case all vehicles, are grouped into the same segment. 
 
-![image](https://user-images.githubusercontent.com/59663734/144401257-c736ee05-fecb-499c-ae13-89454b6abb41.png)
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/144401257-c736ee05-fecb-499c-ae13-89454b6abb41.png" />
+</p>
 
 In semantic segmentation, all objects of the same class are regarded as one segment. **Each pixel is usually associated with a class.** For example, all persons in an image are treated as one segment, cars as another segment and so on. Popular machine learning models that solve semantic segmentation are: **Fully Convolutional Neural Networks, U-net, DeepLab, ...**
 
-### 2.2 Instance Segmentation
+### 2.3 Instance Segmentation
 With instance segmentation, even objects of the same type are treated as different objects. We have seven distinct vehicles in the image below, and we've colored them differently to highlight this. You can think of each vehicle as a separate instance of a vehicle. 
 
 ![image](https://user-images.githubusercontent.com/59663734/144401435-8be660c0-f6e3-4a8b-b1a0-11c8eb6bb607.png)
@@ -478,13 +474,13 @@ With instance segmentation, even objects of the same type are treated as differe
 For instance segmentation, each instance of a person is identified as a separate segment. **Multiple objects of the same class are regarded as separate segments.** though they all belong to the same class - Vehicle. One popular algorithm that solves instance segmentation is **Mask R-CNN.**
 
 
-## 3. CNN Architectures
+## 3. CNN Architectures For Segmentation
 
-### 3.1 U-Net
+### 3.1 FCN
 
 ### 3.2 Segnet
 
-### 3.3 FCN
+### 3.3 U-Net
 
 ### 3.4 Deeplab
 

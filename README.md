@@ -472,7 +472,7 @@ For instance segmentation, each instance of a person is identified as a separate
 
 
 ## 3. CNN Architectures For Segmentation
-Fully Convolutional layers(FCN) was first proposed for segmentation. Then there are various networks based on these fully convolutional network.
+Fully Convolutional Neural Networks(FCN) was first proposed for segmentation. Then there are various networks based on these fully convolutional networks.
 
 Fully Convolutional Neural Network:
 - SegNet
@@ -480,7 +480,15 @@ Fully Convolutional Neural Network:
 - PSPNet
 - Mask-RCNN
 
-### 3.1 FCN
+### 3.1 Fully Convolutional Neural Network(FCN)
+The goal of the FCN was to replace the fully-connected layers and typical CNNs with **convolutional layers** that act as the **decoder**. The encoder layers detect features and downscale the image, and the decoder layers upscale the image and create a pixel wise labeled map.
+
+Filters are learned in the usual way through **forward inference** and **backpropagation**. At the end is a ```pixel-wise prediction layer``` that will create the ```segmentation map```. FCN's encoders are ```feature extractors``` like the feature extracting layers using object detection models such as ```VGG16```, ```ResNet 50```, or ```MobileNet``` which have pre-trained feature extraction layers that we can use.
+
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/146221061-f750262a-7605-43fb-a0f4-1f815005683a.png" />
+</p>
+
 
 ### 3.2 Segnet
 

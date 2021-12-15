@@ -306,11 +306,6 @@ It need not need to have a nice bell shape but atleast it will have a mean of ze
   <img src= "https://user-images.githubusercontent.com/59663734/146001319-6f70f9d9-4108-4372-b9ae-0c7324fc2564.png" />
 </p>
 
-
-
-
-
-
 #### 1.8.2 Importance of Batch Norm
 The idea is that, instead of just normalizing the inputs to the network, we normalize the inputs to layers within the network. It’s called “batch” normalization because during training, we normalize each layer’s inputs by using the mean and variance of the values in the current mini-batch (usually zero mean and unit variance). Batch normalization optimizes network training. It has been shown to have several benefits:
 
@@ -456,7 +451,7 @@ To sum up:
 
 There are two types of image segmentation, **semantic segmentation** and **instance segmentation.**
 
-### 2.2 Semantic Segmentation
+### 2.2. Semantic Segmentation
 
 With semantic segmentation, all objects of the same type form a single classification. The image below has highlighted all vehicles as one item. The word semantic refers to **meaning** so all parts of the image that have the **same meaning**, and in this case all vehicles, are grouped into the same segment. 
 
@@ -466,15 +461,24 @@ With semantic segmentation, all objects of the same type form a single classific
 
 In semantic segmentation, all objects of the same class are regarded as one segment. **Each pixel is usually associated with a class.** For example, all persons in an image are treated as one segment, cars as another segment and so on. Popular machine learning models that solve semantic segmentation are: **Fully Convolutional Neural Networks, U-net, DeepLab, ...**
 
-### 2.3 Instance Segmentation
+### 2.3. Instance Segmentation
 With instance segmentation, even objects of the same type are treated as different objects. We have seven distinct vehicles in the image below, and we've colored them differently to highlight this. You can think of each vehicle as a separate instance of a vehicle. 
 
-![image](https://user-images.githubusercontent.com/59663734/144401435-8be660c0-f6e3-4a8b-b1a0-11c8eb6bb607.png)
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/144401435-8be660c0-f6e3-4a8b-b1a0-11c8eb6bb607.png" />
+</p>
 
 For instance segmentation, each instance of a person is identified as a separate segment. **Multiple objects of the same class are regarded as separate segments.** though they all belong to the same class - Vehicle. One popular algorithm that solves instance segmentation is **Mask R-CNN.**
 
 
 ## 3. CNN Architectures For Segmentation
+Fully Convolutional layers(FCN) was first proposed for segmentation. Then there are various networks based on these fully convolutional network.
+
+Fully Convolutional Neural Network:
+- SegNet
+- UNet
+- PSPNet
+- Mask-RCNN
 
 ### 3.1 FCN
 

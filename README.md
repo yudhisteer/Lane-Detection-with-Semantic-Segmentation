@@ -406,10 +406,59 @@ To sum up:
 
 
 ## 2. Image Segmentation
+The goal of image segmentation is to recognize areas in an image. It does this by assigning every pixel to a particular class with pixels that are in the same class having similar characteristics. Image segmentation can be described in these three steps:
+
+1.  It will first determine the shape of each object, not with bounding boxes, but the outline of the shape will be determined. 
+2.  We then partition an image into multiple segments and have each associated with an object. 
+3.  We'll get each pixel in the image and have it classified into a different class. 
+
 Instead of locating an object within a rectangular bounding box, segmentation instead figures out the pixels that make up that object. In the image below, we have different objects(cars, humans, road,...) and instead of drawing bounding boxes, we've colored the image to denote each of the detected objects. We can then subdivide the image into segments, and these segments can help identify individual objects within the image. 
 
-![image](https://user-images.githubusercontent.com/59663734/144401131-d1342cf6-46dc-4c42-bc5e-85875c446656.png)
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/146134489-02844d4a-f91c-4abd-a27d-eea22fd901cd.png" />
+</p>
 
+Below is an example of a ```pixel map``` created for two classes. On the left we have the image - the data, and on the right we have the the label where it is labelled which pixels are people and which ones are background.
+
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/146132903-8b252bae-4e1a-4adc-ac24-c1467ba075b3.png" />
+</p>
+<p align="center">
+  Classes Indices: [0 = Background, 1 = People]
+</p>
+
+#### 2.0.1 Image Segmentation Basic Architecture
+ The high level architecture for an image segmentation algorithm consists of an ```encoder``` and a ```decoder```.
+ 
+ ##### 1. Input Image
+ We start with our colored input image of size ```224 x 224 x 3``` where ```3``` represents the three RGB channel. The image is then process with an encoder. 
+ 
+ ##### 2. Encoder
+An encoder is a ```feature extractor```. One common method to extract features is one which we explored before - ```CNN```. The encoder extracts features from the image into a feature map. The earlier layers extract low level features such as lines and these lower level features are successfully aggregated into higher level features such as eyes and ears. The aggregation of successful higher level features is done with the help of downsampling. You can think of downsampling as what happens when your computer tries to represent an image with fewer pixels. Like when you're on a video chat with a friend and the internet connection is slow, you might see a grainier view of the other person. But still through the high level features, you can still recognize who they are. 
+ 
+ 
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/146135687-21045da4-c7ef-43bc-ab4c-759ac0f94550.png" />
+</p>
+
+ 
+  ##### 3. Decoder
+  
+  ##### 4. Pixel Map
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+
+To sum up:
+- Encoder is a CNN without its Fully Connected layers.
+- Aggregates low level features to high level features.
+- Decoded replaces the Fully Connected layers in a CNN.
+- We upsample image to the original image to generate a pixel mask.
 
 There are two types of image segmentation, **semantic segmentation** and **instance segmentation.**
 

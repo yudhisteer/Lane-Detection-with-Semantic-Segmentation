@@ -523,11 +523,36 @@ SegNet is very similar to FCN with a notable optimization which is the ```encode
 The difference between SegNet and FCN is that it has **Skip Connections** and **Batch Normalization**.
 
 ### 3.3 U-Net
-U-Net is also symmetric, meaning the number of stages of upsampling and downsampling are **equal**. 
+U-Net was proposed in 2015 in a paper by the name of _U-Net: convolutional networks for biomedical image segmentation_ and was written by Olaf Ronneberger, Philip Fischer and Thomas Brox. 
+
+U-Net is also a fully convolutional neural network, but with the key difference that in addition to the up sampling path, ```skip connections``` between the encoder and the decoder are also used. These skip connections are denoted by the horizontal arrows that reverse the U shape. 
 
 <p align="center">
-  <img src= "https://user-images.githubusercontent.com/59663734/146327208-14b262b6-855e-48bc-8b62-d6d547ddf42c.png" />
+  <img src= "https://user-images.githubusercontent.com/59663734/146351786-b63678f9-f990-4797-900a-eb2e6d14fee0.png" />
 </p>
+
+In general the U-Net is divided into three parts: **Encoder, Decoder** and **Bottle-neck**.
+
+#### 3.3.1 Encoder
+On the left of the U-shape we have the Encoder which is similar to the FCNs. We have an image fed into convolution layers and then down sampled using max pooling.
+
+At the 1st level, if the image is fed in as a ```128x128``` and pass through two convolutional layers that have ```64``` filters each, the subsequent images when pooled, will be ```64x64```. This happens because a max pooling layer with a ```2x2``` window and a stride of ```2``` will reduce the dimensionality by half. 
+
+In the 2nd level, the images are passed through two layers of convolutions with ```128``` filters each and they are then pooled from ```64x64``` to ```32x32```. 
+
+In the 3rd level, the ```32x32``` matrices are passed through two layers of ```256``` filters each and then pooled to ```16x16```. 
+
+And in the 4th level, the ```16x16``` images are fed through two layers of ```512``` filters each, before being pooled into an ```8x8``` at the fifth level.
+
+Thus from the 1st level to the 5th, a ```128x128``` image is filtered and down sampled into ```8x8``` blocks.
+
+#### 3.3.2 Bottleneck
+The bottleneck is an additional element in the unit architecture which is a simple convolutional layer with ```1024``` filters. It can further extract features, but it doesn't have a pooling layer to follow it.
+
+
+#### 3.3.3 Decoder
+
+
 
 
 ### 3.4 Deeplab

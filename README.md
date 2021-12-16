@@ -513,9 +513,22 @@ Below is the architecture of the FCN model:
   <img src= "https://user-images.githubusercontent.com/59663734/146318557-8f02c9e2-49a4-406e-bd45-45cab1ca26b9.png" />
 </p>
 
-### 3.2 Segnet
+### 3.2 SegNet
+SegNet is very similar to FCN with a notable optimization which is the ```encoder layers``` are **symmetric** with the ```decoder layers```. They are like mirror images of each other with the same number of layers and the same arrangement of those layers. That is, for each pooling layer that downsampled in the encoder there is an upsampling layer in the decoder section. The first segment has two convolutional layers, followed by a pooling layer. The last segment is a mirror image of this with an upsampling layer followed by two convolutional layers. The same symmetry is found in the second layer and the second-to-last one, and so on for the rest of the image.
+
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/146326119-d9d4ba96-ab20-4986-a8fc-0a07263449d2.png" />
+</p>
+
+The difference between SegNet and FCN is that it has **Skip Connections** and **Batch Normalization**.
 
 ### 3.3 U-Net
+U-Net is also symmetric, meaning the number of stages of upsampling and downsampling are **equal**. 
+
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/146327208-14b262b6-855e-48bc-8b62-d6d547ddf42c.png" />
+</p>
+
 
 ### 3.4 Deeplab
 

@@ -489,6 +489,8 @@ Filters are learned in the usual way through **forward inference** and **backpro
   <img src= "https://user-images.githubusercontent.com/59663734/146221061-f750262a-7605-43fb-a0f4-1f815005683a.png" />
 </p>
 
+The decoder part of the FCN is usually called FCN-32, FCN-16 or FCN-8 with a number denotes the stride size during upsampling. You may recall that the stride in a convolutional layer determines how many pixels to shift the sliding window as it traverses the image. The smaller the stride, the more detailed the processing. The difference between the decoder architectures ends up effectively being the resolution of the final pixel map. You can see that here as the resolution improves, as the strike decreases from 32-16 and then to eight, and eight is the closest to the ground truth. 
+
 
 ### 3.2 Segnet
 

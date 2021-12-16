@@ -536,13 +536,13 @@ In general the U-Net is divided into three parts: **Encoder, Decoder** and **Bot
 #### 3.3.1 Encoder
 On the left of the U-shape we have the Encoder which is similar to the FCNs. We have an image fed into convolution layers and then down sampled using max pooling.
 
-At the 1st level, if the image is fed in as a ```128x128``` and pass through two convolutional layers that have ```64``` filters each, the subsequent images when pooled, will be ```64x64```. This happens because a max pooling layer with a ```2x2``` window and a stride of ```2``` will reduce the dimensionality by half. 
+- **1st level**: if the image is fed in as a ```128x128``` and pass through two convolutional layers that have ```64``` filters each, the subsequent images when pooled, will be ```64x64```. This happens because a max pooling layer with a ```2x2``` window and a stride of ```2``` will reduce the dimensionality by half. 
 
-In the 2nd level, the images are passed through two layers of convolutions with ```128``` filters each and they are then pooled from ```64x64``` to ```32x32```. 
+- **2nd level**: the images are passed through two layers of convolutions with ```128``` filters each and they are then pooled from ```64x64``` to ```32x32```. 
 
-In the 3rd level, the ```32x32``` matrices are passed through two layers of ```256``` filters each and then pooled to ```16x16```. 
+- **3rd level**: the ```32x32``` matrices are passed through two layers of ```256``` filters each and then pooled to ```16x16```. 
 
-And in the 4th level, the ```16x16``` images are fed through two layers of ```512``` filters each, before being pooled into an ```8x8``` at the fifth level.
+- **4th level**: the ```16x16``` images are fed through two layers of ```512``` filters each, before being pooled into an ```8x8``` at the 5th level.
 
 Thus from the 1st level to the 5th, a ```128x128``` image is filtered and down sampled into ```8x8``` blocks.
 
@@ -551,6 +551,17 @@ The bottleneck is an additional element in the unit architecture which is a simp
 
 
 #### 3.3.3 Decoder
+At the 5th level we upsample our ```8x8``` block to ```16x16``` and move to the 4th level of the U-shape of the decoder. 
+
+- **4th level**: we take the ```512``` filters from the layer of the encoder that's at the same level as this decoder layer. Since the encoder layer and decoder layer are at the same level in the unit, they also have the same height and width of ```16x16``` and they also have the same number of filters at ```512``` each. So we will **concatenate the filters from the encoder with the filters of the decoder** for a total of ```1024``` filters. We then pass this concatenated set of ```1024``` filters through ```2``` convolutional layers.And this pattern continues through the decoder. We'll upsample the blocks to ```32x32``` and move up to the 3rd level.
+
+- **3rd level**: We'll take the filters from the encoder on the same level, concatenate them to the blocks from the decoder and pass the entire thing through ```2``` convolutional layers. So  we upsampled to ```64x64``` and move up to the 2nd level. 
+
+- **2nd level**: We again combine the filters from the encoder with the decoder and pass them through two convolution layers and finally, upsample to ```128x128``` and move up to 1st level.
+
+- **1st level**: We concatenate the filters from the encoder and decoder and pass them through the two convolution layers.
+
+Finally, the output segmentation map is obtained, by performing ```1x1``` convolution with the filters equal to the number of classes on the output of the final stage and the upsampling path. Recall that when you perform a convolution with a window size of ```1x1```, this outputs a single value. So, if you wanted your model to predict, say amongst 11 classes, you could apply 11 1 by 1 convolution filters, to output 11 predictions, one for each class.
 
 
 

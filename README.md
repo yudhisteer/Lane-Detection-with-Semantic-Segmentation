@@ -483,14 +483,35 @@ Fully Convolutional Neural Network:
 ### 3.1 Fully Convolutional Neural Network(FCN)
 The goal of the FCN was to replace the fully-connected layers and typical CNNs with **convolutional layers** that act as the **decoder**. The encoder layers detect features and downscale the image, and the decoder layers upscale the image and create a pixel wise labeled map.
 
-Filters are learned in the usual way through **forward inference** and **backpropagation**. At the end is a ```pixel-wise prediction layer``` that will create the ```segmentation map```. FCN's encoders are ```feature extractors``` like the feature extracting layers using object detection models such as ```VGG16```, ```ResNet 50```, or ```MobileNet``` which have pre-trained feature extraction layers that we can use.
+Filters are learned in the usual way through **forward inference** and **backpropagation**. As the image passes through convolutional layers, it gets downsampled. Then the output is passed to the decoder section of the model, which are additional convolutional layers. At the end is a ```pixel-wise prediction layer``` that will create the ```segmentation map```. FCN's encoders are ```feature extractors``` like the feature extracting layers using object detection models such as ```VGG16```, ```ResNet 50```, or ```MobileNet``` which have pre-trained feature extraction layers that we can use.
 
 <p align="center">
   <img src= "https://user-images.githubusercontent.com/59663734/146221061-f750262a-7605-43fb-a0f4-1f815005683a.png" />
 </p>
 
-The decoder part of the FCN is usually called FCN-32, FCN-16 or FCN-8 with a number denotes the stride size during upsampling. You may recall that the stride in a convolutional layer determines how many pixels to shift the sliding window as it traverses the image. The smaller the stride, the more detailed the processing. The difference between the decoder architectures ends up effectively being the resolution of the final pixel map. You can see that here as the resolution improves, as the strike decreases from 32-16 and then to eight, and eight is the closest to the ground truth. 
+The decoder part of the FCN is usually called ```FCN-32```, ```FCN-16``` or ```FCN-8``` where the number in the title represents the number of stride size during upsampling.  The smaller the stride, the more detailed the processing.  The decoder layers upsamples in the image step-by-step to its original dimensions so that we get a pixelwise labeling, also called ```pixel mask``` or ```segmentation mask``` of the original image.  From the result below, the resolution improves as the stride decreases and at stride  = ```8``` is closest to the ground truth.
 
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/146316209-7035cfc0-8984-431a-9073-15b7f50c87dd.png" />
+</p>
+
+Note: A pooling of window size ```2x2``` with stride ```2``` reduces the height and width of the input by half. But the depth remains constant. An input image of size ```256x256```  would get pooled to ```128x128``` and so on. 
+
+#### 3.1.1 FCN-32
+The architecture has five pooling layers. Each pooled result gets its dimensions reduced by half, **five times**. The original image gets reduced by a factor of <a href="https://www.codecogs.com/eqnedit.php?latex=2^{5}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?2^{5}" title="2^{5}" /></a> which equals ```32```. To upsample the final pooling layer back to the original image size, it needs to be upsampled by a factor of ```32```. This is done by upsampling with a stride size of ```32```, which means that each input pixel from ```Pool 5``` is turned into a ```32x32``` pixel output. This ```32``` times upsampling is also the pixelwise prediction of classes for the original image.
+
+#### 3.1.2 FCN-16
+FCN-16 works similarly to FCN-32, but in addition to using Pool 5, it also uses Pool 4. In step 1, the output ofPpool 5 is upsampled by a factor of ```2```, so the result has the same height and width as Pool 4. Separately, we use the output of Pool 4 to make a **pixelwise prediction** using a ```1x1``` convolution layer. The Pool 4 prediction is added to the 2x upsampled output of Pool 5. The output of this addition is then upsampled by a factor of ```16``` to get the final pixelwise segmentation map. Upsampling with a stride of ```16``` takes each input pixel and outputs a ```16x16``` grid of pixels.
+
+
+#### 3.1.3 FCN-8
+FCN-8 decoder works very similar with the same first two steps, but instead of upsampling the summation of the Pool 4 and 5 predictions by ```16```, it will 2x upsample it, and then add that to the Pool 3 prediction. This is then upsampled by ```8```. 
+
+Below is the architecture of the FCN model:
+
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/146318557-8f02c9e2-49a4-406e-bd45-45cab1ca26b9.png" />
+</p>
 
 ### 3.2 Segnet
 

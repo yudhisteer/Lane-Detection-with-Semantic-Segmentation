@@ -561,9 +561,12 @@ At the 5th level we upsample our ```8x8``` block to ```16x16``` and move to the 
 
 - **1st level**: We concatenate the filters from the encoder and decoder and pass them through the two convolution layers.
 
-Finally, the output segmentation map is obtained, by performing ```1x1``` convolution with the filters equal to the number of classes on the output of the final stage and the upsampling path. Recall that when you perform a convolution with a window size of ```1x1```, this outputs a single value. So, if you wanted your model to predict, say amongst 11 classes, you could apply 11 1 by 1 convolution filters, to output 11 predictions, one for each class.
+Finally, the output segmentation map is obtained, by performing ```1x1``` convolution with the filters equal to the number of classes on the output of the final stage and the upsampling path. Recall a ```1x1``` filter is the same as taking all the numbers in our feature map and multiplying each of these numbers in one slice in the same position and width by 192 weights(for example below), apply a non-linearity to it and output it into a feature map. 
 
 
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/146499853-aaaaaa24-14d2-4bde-be28-d72a54414740.png" />
+</p>
 
 
 ### 3.4 Deeplab

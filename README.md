@@ -565,13 +565,37 @@ Finally, the output segmentation map is obtained, by performing ```1x1``` convol
 
 
 <p align="center">
-  <img src= "https://user-images.githubusercontent.com/59663734/146499853-aaaaaa24-14d2-4bde-be28-d72a54414740.png" />
+  <img src= "https://user-images.githubusercontent.com/59663734/146508017-c3d9619e-9809-462f-8a6e-0646b358a0c5.png" />
 </p>
 
 
-### 3.4 Deeplab
+### 3.4 R-CNN
+The first model architecture that we'll look at is the R-CNN, where the R stands for region. R-CNN is a method of using a region based CNN to implement selective search with neural networks. R-CNN was first proposed in the paper rich feature hierarchies for accurate object detection and semantic segmentation by Ross Girshick, Jeff Donahue, Trevor Darrell and Jitendra Malik in 2013. First, the R-CNN takes an input image.
 
-### 3.5 Mask R-CNN
+Second, it extracts region proposals. Each region proposal is a grouping of smaller segments using the selective search method we talked about earlier.
+
+The model will then propose about 2000 of these regions.
+
+Third, the model extracts features from each of these 2000 region proposals using a pre-trained convolutional neural network. And in this case, it uses the Alex net architecture.
+
+In order to adjust each region proposal to fit as the input to the R-CNN, we work the image dimensions to fit the Alex net input dimensions. And these are called warped regions. Finally, to classify the regions, the R-CNN uses support vector machines as opposed to dense layers.
+
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/146538708-eac37428-9d5e-4538-85e1-0ba9cc1ce221.png" />
+</p>
+
+
+
+
+#### 3.4.1 Fast R-CNN
+
+
+
+#### 3.4.2 Faster R-CNN
+
+
+
+#### 3.4.3 Mask R-CNN
 
 ## Conclusion
 
@@ -583,6 +607,9 @@ Finally, the output segmentation map is obtained, by performing ```1x1``` convol
 5. https://towardsdatascience.com/types-of-convolutions-in-deep-learning-717013397f4d
 6. https://towardsdatascience.com/batch-normalization-8a2e585775c9
 7. https://e2eml.school/batch_normalization.html
+8. https://github.com/mrgloom/awesome-semantic-segmentation
+9. https://www.topbots.com/semantic-segmentation-guide/
+10. https://medium.com/beyondminds/a-simple-guide-to-semantic-segmentation-effcf83e7e54
 
 
 

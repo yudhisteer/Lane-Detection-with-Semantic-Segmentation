@@ -569,7 +569,7 @@ Finally, the output segmentation map is obtained, by performing ```1x1``` convol
 </p>
 
 
-### 3.4 R-CNN
+### 3.4 Region-Based Convolutional Neural Network (R-CNN)
 The first model architecture that we'll look at is the R-CNN, where the R stands for region. R-CNN is a method of using a region based CNN to implement selective search with neural networks. R-CNN was first proposed in the paper rich feature hierarchies for accurate object detection and semantic segmentation by Ross Girshick, Jeff Donahue, Trevor Darrell and Jitendra Malik in 2013. First, the R-CNN takes an input image.
 
 Second, it extracts region proposals. Each region proposal is a grouping of smaller segments using the selective search method we talked about earlier.

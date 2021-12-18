@@ -525,7 +525,7 @@ The difference between SegNet and FCN is that it has **Skip Connections** and **
 ### 3.3 U-Net
 U-Net was proposed in 2015 in a paper by the name of _U-Net: convolutional networks for biomedical image segmentation_ and was written by Olaf Ronneberger, Philip Fischer and Thomas Brox. 
 
-U-Net is also a fully convolutional neural network, but with the key difference that in addition to the up sampling path, ```skip connections``` between the encoder and the decoder are also used. These skip connections are denoted by the horizontal arrows that reverse the U shape. 
+U-Net is also a fully convolutional neural network, but with the key difference that in addition to the upsampling path, ```skip connections``` between the encoder and the decoder are also used. These skip connections are denoted by the curved arrows that reverse the U shape. 
 
 <p align="center">
   <img src= "https://user-images.githubusercontent.com/59663734/146351786-b63678f9-f990-4797-900a-eb2e6d14fee0.png" />
@@ -570,32 +570,54 @@ Finally, the output segmentation map is obtained, by performing ```1x1``` convol
 
 
 ### 3.4 Region-Based Convolutional Neural Network (R-CNN)
-The first model architecture that we'll look at is the R-CNN, where the R stands for region. R-CNN is a method of using a region based CNN to implement selective search with neural networks. R-CNN was first proposed in the paper rich feature hierarchies for accurate object detection and semantic segmentation by Ross Girshick, Jeff Donahue, Trevor Darrell and Jitendra Malik in 2013. First, the R-CNN takes an input image.
+R-CNN is a method of using a region based CNN to implement ```selective search``` algorithm to extract the top ```2000``` region proposals among millions of regions of interest (ROI) proposals from an image and feed it to a CNN model. R-CNN was proposed in the paper: _Rich feature hierarchies for accurate object detection and semantic segmentation_ by Ross Girshick, Jeff Donahue, Trevor Darrell and Jitendra Malik in 2013. 
 
-Second, it extracts region proposals. Each region proposal is a grouping of smaller segments using the selective search method we talked about earlier.
-
-The model will then propose about 2000 of these regions.
-
-Third, the model extracts features from each of these 2000 region proposals using a pre-trained convolutional neural network. And in this case, it uses the Alex net architecture.
-
-In order to adjust each region proposal to fit as the input to the R-CNN, we work the image dimensions to fit the Alex net input dimensions. And these are called warped regions. Finally, to classify the regions, the R-CNN uses support vector machines as opposed to dense layers.
+In order to perform **object detection**, we need to first peform **object localisation**. That is, we first ask: "Where is the object in the image?" and only then ask: "What is that object?". One approach discussed in the project [Automating Attendance System using Face Recognition with Masks](https://github.com/yudhisteer/Face-Recognition-with-Masks) is to use a trained classfier and run a sliding window all thoughout the image with a spesific stride number until it localizes the object. This approach is called ```Exhaustive Search```. One major drawback of this approach is that it classifies a lot of region where there is no object. For example, in the example below on the left, our sliding window in red is classifying a part of the image where it is basically blank - no interesting object. A solution to this is to run a segmentation algorithm to the image and find blobs for region of interest. We put these blobs in boudning boxes and then run a classfiier to detect the object. For the image below on the right, the blue blob would predict a car and the yellow ones would predict traffic signs. 
 
 <p align="center">
   <img src= "https://user-images.githubusercontent.com/59663734/146538708-eac37428-9d5e-4538-85e1-0ba9cc1ce221.png" />
 </p>
 
+The R-CNN consists of 3 main components: **Selective Search**, **Feature Extraction** and **Prediction**.
+
+
+#### 3.4.1 Selective Search
+The selective serach take as input an image. It then extracts ```region proposals```. It generates initial ```sub-segmentations``` to create multiple regions in the image. Next, we recursively combine the similar smaller regions into larger ones. We combine these regions based on **color similarity, texture similarity, size similarity**, and **shape compatibility**. 
+
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/146642226-252df47c-aac1-4e9a-99ec-8b83ac33224a.png" />
+</p>
+
+We can output the candidate object boudning boxes for each semantic region. As seen in the image below, the initial segmentation is noisy and hence, it has a lot of bounding boxes. As we combine the regions together(around ```2000``` proposed regions), we reach an ideal number of semantic regions and crop the bounding boxes for each region. Our next step would be the feature extraction.
+
+#### 3.4.2 Feature Extraction
+In the feature extraction step, the model extracts features from each of these ```2000``` region proposals using a pre-trained convolutional neural network such as the ```AlexNet``` architecture. In order to adjust each region proposal to fit as the input to the R-CNN, we ```warp``` the image dimensions to create ```warped regions``` to fit the AlexNet input dimensions.
+
+
+#### 3.4.3 Prediction
+The prediction step uses ```Support Vector machines(SVM)``` as opposed to dense layers to classify the class of each proposals. Secondly, we train a linear regression model for bounding box prediction for each proposed region. 
+
+
+#### 3.4.4 RCNN Issues
+Training RCNN is slow and expensive because:
+- the selective search algorithm extracts approx. 2000 regions of interest per image which is slow
+- feature extraction must run through these 2000 regions in one image. With numerous images, this would be time consuming. 
+
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/146641842-91c4e192-3c84-4663-a518-f7bd389806df.png" />
+</p>
+
+We conclude that R-CNN is slow in both training and prediction. ```Fast R-CNN``` was then developed to overcome this bottleneck of R-CNN.
+
+#### 3.4.5 Fast R-CNN
 
 
 
-#### 3.4.1 Fast R-CNN
+#### 3.4.6 Faster R-CNN
 
 
 
-#### 3.4.2 Faster R-CNN
-
-
-
-#### 3.4.3 Mask R-CNN
+#### 3.4.3#7 Mask R-CNN
 
 ## Conclusion
 
@@ -610,6 +632,8 @@ In order to adjust each region proposal to fit as the input to the R-CNN, we wor
 8. https://github.com/mrgloom/awesome-semantic-segmentation
 9. https://www.topbots.com/semantic-segmentation-guide/
 10. https://medium.com/beyondminds/a-simple-guide-to-semantic-segmentation-effcf83e7e54
+11. https://www.geeksforgeeks.org/selective-search-for-object-detection-r-cnn/
+12. https://laptrinhx.com/object-detection-algorithms-r-cnn-vs-fast-r-cnn-vs-faster-r-cnn-1543446592/
 
 
 

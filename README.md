@@ -580,6 +580,10 @@ In order to perform **object detection**, we need to first peform **object local
 
 The R-CNN consists of 3 main components: **Selective Search**, **Feature Extraction** and **Prediction**.
 
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/146641842-91c4e192-3c84-4663-a518-f7bd389806df.png" />
+</p>
+
 
 #### 3.4.1 Selective Search
 The selective serach take as input an image. It then extracts ```region proposals```. It generates initial ```sub-segmentations``` to create multiple regions in the image. Next, we recursively combine the similar smaller regions into larger ones. We combine these regions based on **color similarity, texture similarity, size similarity**, and **shape compatibility**. 
@@ -597,15 +601,14 @@ In the feature extraction step, the model extracts features from each of these `
 #### 3.4.3 Prediction
 The prediction step uses ```Support Vector machines(SVM)``` as opposed to dense layers to classify the class of each proposals. Secondly, we train a linear regression model for bounding box prediction for each proposed region. 
 
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/146643833-9cb3aebb-5674-4f94-936a-96e5a64a6c5d.png" />
+</p>
 
 #### 3.4.4 RCNN Issues
 Training RCNN is slow and expensive because:
 - the selective search algorithm extracts approx. 2000 regions of interest per image which is slow
 - feature extraction must run through these 2000 regions in one image. With numerous images, this would be time consuming. 
-
-<p align="center">
-  <img src= "https://user-images.githubusercontent.com/59663734/146641842-91c4e192-3c84-4663-a518-f7bd389806df.png" />
-</p>
 
 We conclude that R-CNN is slow in both training and prediction. ```Fast R-CNN``` was then developed to overcome this bottleneck of R-CNN.
 

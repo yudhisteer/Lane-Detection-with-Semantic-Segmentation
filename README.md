@@ -8,8 +8,23 @@
 
 ## Plan of Action
 1. Principles of Convolutional Neural Network
+- Convolutions
+- Padding
+- Stride
+- Pooling
+- Upsampling
+- Dilated(Atrous) Convolution
+- CNN
+- Batch Normalization
 2. Image Segmentation
+- Image Segmentation Basic Architecture
+- Semantic Segmentation
+- Instance Segmentation
 3. CNN Architectures
+- FCN
+- SegNet
+- U-Net
+- R-CNN
 
 
 ## 1. Principles of Convolutional Neural Network
@@ -27,7 +42,7 @@ The operation can be understood by the animation below:
 
 The example here represents the image as 2D but our image will be 3D as we have our height, width and depth where the latter represents the ```3``` color channels of our image - ```RGB```. Since our image is 3D, our kernel also is 3D with its depth of the same dimension as the input image, that is, ```3```. We perform the same convolutional operation as on our 2D image and the matri multiplication will still result into a scalar. That is, our feature map will result into  ```n x n x 1``` dimension. Since we will have a number of filters passing onto our input image, our resulted feature map will be of size ```n x n x #filters```. What happens is that with each filter, we create a feature map and with a number of filters, the feature maps are stacked along the depth dimension.
 
-For the example below, we perform convolution using a ```3x3``` filter and we produce a ```3x3``` feature map. In order for our Neural Nwtork(NN) to learn complex features we need to add ```non-linearity``` into our equation. Therefore, we pass our values of our feature map into a ```ReLu activation function``` such that the output values of our feature map are no longer a linear system but the relu function applied to them. The relu function is as follows:
+For the example below, we perform convolution using a ```3x3``` filter and we produce a ```3x3``` feature map. In order for our Neural Network(NN) to learn complex features we need to add ```non-linearity``` into our equation. Therefore, we pass our values of our feature map into a ```ReLu activation function``` such that the output values of our feature map are no longer a linear system but the relu function applied to them. The relu function is as follows:
 
 <p align="center">
   <img src= "https://user-images.githubusercontent.com/59663734/145471102-b25dea62-8366-4ae0-8034-e6dd682caeb3.png" />

@@ -683,7 +683,8 @@ To sum up:
 
 - **R-CNN**: Propose regions. Classify porposed regions one at a time  and output label with SVM and bounding box with regression. 
 - **Fast R-CNN**: Performing feature extraction over the image **before** proposing regions, thus only running one CNN over the entire image instead of 2000 CNN’s over 2000 overlapping regions. Replacing the SVMs with a softmax layer, thus extending the neural network for predictions instead of creating a new model.
-- **Faster R-CNN**: Use convolutional network to propose regions. 
+- **Faster R-CNN**: Instead of Selective Search algorithm, it uses RPN (Region Proposal Network) to select the best ROIs automatically to be passed for ROI Pooling. Faster R-CNN = RPN + Fast R-CNN
+- **Mask R-CNN**: 
 
 ## Conclusion
 

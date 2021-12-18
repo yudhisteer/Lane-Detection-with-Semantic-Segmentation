@@ -607,18 +607,68 @@ The prediction step uses ```Support Vector machines(SVM)``` as opposed to dense 
 
 **Note:** ```Transfer learning``` is used to pre-train the CNN section of the R-CNN model, and then fine tune that model to this specific task. Researchers identified a large **auxilary dataset** for pre-training. The pre-training auxiliary task is helping the model to perform its **domain specific task** better. Note that the images in the auxiliary dataset are not warped, like the region proposals used in this object detection task. These images also don't have bounding box labels, but the auxiliary data can still be used for pre-training, even when it's different than the data that's used for the desired domain specific task. The auxiliary data can help the model learn generally useful feature extraction, if it's a large dataset. So pre-training is normally performed on very large datasets, even if there are different classes or different formats than the actual final task that we want to perform.
 
-#### 3.4.4 R-CNN Issues
-Training RCNN is slow and expensive because:
-- the selective search algorithm extracts approx. 2000 regions of interest per image which is slow
-- feature extraction must run through these 2000 regions in one image. With numerous images, this would be time consuming. 
+#### R-CNN Issues
+
+-  Finding the areas using selective search could be very slow and running each of the areas of interest, up to 2,000 of them, through the CNN could also be **slow** and **computationally expensive**. R-CNN framework lacked speed and end-to-end trainability.
+-  Another large major problem was the **memory** requirement because of the need to have multiple classifiers for each class of objects.
 
 We conclude that R-CNN is slow in both training and prediction. ```Fast R-CNN``` was then developed to overcome this bottleneck of R-CNN.
 
-#### 3.4.5 Fast R-CNN
+#### 3.4.4 Fast R-CNN
+ Ross Girshick proposed an updated architecture called ```Fast R-CNN``` to improve the speed and memory issues of R-CNN.
+ 
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/146649910-42df4c48-29f9-4607-8783-f23f92bdc682.png" />
+</p>
 
+1.  An image is fed to the network along with a set of region proposals. Note that the difference between Fast R-CNN and the original R-CNN is that instead of using Selective Search to generate several region proposals for each image, Fast R-CNN expects these region proposals as inputs and it doesn't generate them itself.
+
+2.  The CNN processes the image and outputs a set of features into a ```feature map```. Remember that the detected features are stored relative to where they're detected in the original image. For instance, if it's a heart and a horse's mouth that are detected, the heart feature are stored near the top of the map and the horse's mouth is stored near the bottom, similar to where they were in the original image.
+
+3.  We then use the input region proposals and extract the ```region of interest(ROI)``` from this feature map and create a ```region proposal feature map```, one for each proposed region. This process is called the ```region of interest projection```. The difference between the first feature map and this region proposal feature map is that the original feature map is for the **entire image**, whereas the region proposal feature map is for the **specific** subsections of the proposed region of the image.
+
+4. We will then ```downsample(pooling)``` this feature map with the help of a region of interest pooling layer to get a fixed length feature map of a consistent height and width. This means that regardless of the dimensions of each proposed region, which may vary in size, the fixed length feature map is consistently the same size.
+
+5. To make this map usable, we can then ```flatten``` the fixed size feature map into a ```one-dimensional``` vector, which we'll call the ```region of interest feature vector```, and we will create this region of interest feature vector using a few ```fully connected layers```.
+
+6. We can then use this region of interest feature vector to generate two outputs:
+- The first output uses a ```fully-connected layer```, followed by ```Softmax``` in order to classify the image. 
+- The second output uses a ```fully-connected layer``` and ```linear regression``` outputs to define the **size** and **location** of the bounding box for that classified object. 
+
+
+In summary, ```no selective search``` is done to find the regions of interest. Instead a ```ConvNet``` is used and its filters determine those ```regions of interests```. The **entire image**, and not subsets, is passed into the convNet.  This saves the expensive Selective Search process. The ConvNet trained on finding features can then give us a ```feature map``` of the image.  Note here that we are now generating region proposals based on the last feature map of the network, not from the original image itself. As a result, we can train just one CNN for the entire image. The feature map outputs can then be ```pooled``` and fed through a ```fully-connected dense layer``` to get a feature vector representing our ```regions of interest``` within the image. The feature vector can then be classified through a fully connected layer with ```Softmax``` to get our ```classification```, and another with ```Regression``` to get our ```bounding boxes```.
+
+#### Fast R-CNN Issues
+
+- Fast R-CNN is much faster in both training and testing time. However, the improvement is not dramatic because the region proposals are generated separately by another model and that is very expensive.
+- It takes around ```2``` seconds per image to detect objects which can still be considered slow if we have a large dataset.
 
 
 #### 3.4.6 Faster R-CNN
+The main goal of Faster R-CNN was to replace the slow selective search algorithm with a fast neural net hence, introducing the **learnable** ```region proposal network*RPN)``` to propose regions of interest in the region proposal feature map.
+
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/146651868-2abda632-5ba3-464a-8a76-493b97c6aebf.png" />
+</p>
+
+
+RPN is a ```fully convolutional network(FCN)``` which, as discussed above, uses convolutions are not dense layers. So we can simultaneously predict object bounds and object scores for each pixel.  The RPN is designed to be trained end-to-end to generate **high quality region proposals**, which are used by faster R-CNN for detection. The RPN makes object proposals possible employing **anchors** or priors.
+
+1.  Faster R-CNN the entire image is passed into a ConvNet. 
+2.  This feature map then has a ```3x3``` sliding window that goes across it to find areas of interest and maps it to a lower dimension. A new entity called a **region proposal network(RPN)** is used create anchor boxes on the image.  
+3.  The center of the anchor box comes from the coordinates of the sliding window and the boundaries of the box come from the RPN, giving us a score that the boundaries of the box better fit the objects. That is, we look at each location in our last feature map and consider ```k``` different boxes centered around it: a tall box, a wide box, a large box and so on. For each of those boxes, we output whether or not we think it contains an object, and what the coordinates for that box are. 
+4.  Although the RPN outputs bounding box coordinates, it does not try to classify any potential objects: its sole job is still ```proposing object regions```. If an anchor box has an **“objectness”** score above a certain threshold, that box’s coordinates get passed forward as a ```region proposal```.
+5.  We then train a Fast R-CNN object detection model using the proposals generated by the current RPN. We add a pooling layer, some fully-connected layers, and finally a softmax classification layer and bounding box regressor.
+
+In summary, **Faster R-CNN = RPN + Fast R-CNN**
+
+Although Faster R-CNN is complex, its core design is the same as the original R-CNN: **hypothesize object regions and then classify them**..
+
+Below is a summary of the 3 types of R-CNN:
+
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/146651712-adecaa8c-6aa6-4906-bbe1-7cbd3a5a617a.png" />
+</p>
 
 
 
@@ -631,8 +681,8 @@ We conclude that R-CNN is slow in both training and prediction. ```Fast R-CNN```
 
 To sum up:
 
-- **R-CNN**: Propose regions. Classify porposed regions one at a time  and output label with SVM and bounding box with regression.
-- **Fast R-CNN**: Propose regions. Use convolutional implementation of sliding windows to classify all the proposed  regions.
+- **R-CNN**: Propose regions. Classify porposed regions one at a time  and output label with SVM and bounding box with regression. 
+- **Fast R-CNN**: Performing feature extraction over the image **before** proposing regions, thus only running one CNN over the entire image instead of 2000 CNN’s over 2000 overlapping regions. Replacing the SVMs with a softmax layer, thus extending the neural network for predictions instead of creating a new model.
 - **Faster R-CNN**: Use convolutional network to propose regions. 
 
 ## Conclusion
@@ -651,6 +701,9 @@ To sum up:
 11. https://www.geeksforgeeks.org/selective-search-for-object-detection-r-cnn/
 12. https://laptrinhx.com/object-detection-algorithms-r-cnn-vs-fast-r-cnn-vs-faster-r-cnn-1543446592/
 13. https://lilianweng.github.io/lil-log/2017/12/31/object-recognition-for-dummies-part-3.html
+14. https://www.youtube.com/watch?v=Z9nCBtaEb_g
+15. https://nanonets.com/blog/semantic-image-segmentation-2020/
+16. https://towardsdatascience.com/deep-learning-for-object-detection-a-comprehensive-review-73930816d8d9
 
 
 

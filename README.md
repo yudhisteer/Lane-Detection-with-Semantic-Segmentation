@@ -7,7 +7,7 @@
 ## Dataset(s)
 
 ## Plan of Action
-1. Principles of Convolutional Neural Network
+**1. Principles of Convolutional Neural Network**
 - Convolutions
 - Padding
 - Stride
@@ -16,11 +16,13 @@
 - Dilated(Atrous) Convolution
 - CNN
 - Batch Normalization
-2. Image Segmentation
+
+**2. Image Segmentation**
 - Image Segmentation Basic Architecture
 - Semantic Segmentation
 - Instance Segmentation
-3. CNN Architectures
+
+**3. CNN Architectures**
 - FCN
 - SegNet
 - U-Net

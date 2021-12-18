@@ -605,6 +605,8 @@ The prediction step uses ```Support Vector machines(SVM)``` as opposed to dense 
   <img src= "https://user-images.githubusercontent.com/59663734/146643833-9cb3aebb-5674-4f94-936a-96e5a64a6c5d.png" />
 </p>
 
+**Note:** ```Transfer learning``` is used to pre-train the CNN section of the R-CNN model, and then fine tune that model to this specific task. Researchers identified a large **auxilary dataset** for pre-training. The pre-training auxiliary task is helping the model to perform its **domain specific task** better. Note that the images in the auxiliary dataset are not warped, like the region proposals used in this object detection task. These images also don't have bounding box labels, but the auxiliary data can still be used for pre-training, even when it's different than the data that's used for the desired domain specific task. The auxiliary data can help the model learn generally useful feature extraction, if it's a large dataset. So pre-training is normally performed on very large datasets, even if there are different classes or different formats than the actual final task that we want to perform.
+
 #### 3.4.4 RCNN Issues
 Training RCNN is slow and expensive because:
 - the selective search algorithm extracts approx. 2000 regions of interest per image which is slow
@@ -618,6 +620,12 @@ We conclude that R-CNN is slow in both training and prediction. ```Fast R-CNN```
 
 #### 3.4.6 Faster R-CNN
 
+
+To sum up:
+
+- **R-CNN**: Propose regions. Classify porposed regions one at a time  and output label with SVM and bounding box with regression.
+- **Fast R-CNN**: Propose regions. Use convolutional implementation of sliding windows to classify all the proposed  regions.
+- **Faster R-CNN**: Use convolutional network to propose regions. 
 
 
 #### 3.4.3#7 Mask R-CNN
@@ -637,6 +645,7 @@ We conclude that R-CNN is slow in both training and prediction. ```Fast R-CNN```
 10. https://medium.com/beyondminds/a-simple-guide-to-semantic-segmentation-effcf83e7e54
 11. https://www.geeksforgeeks.org/selective-search-for-object-detection-r-cnn/
 12. https://laptrinhx.com/object-detection-algorithms-r-cnn-vs-fast-r-cnn-vs-faster-r-cnn-1543446592/
+13. https://lilianweng.github.io/lil-log/2017/12/31/object-recognition-for-dummies-part-3.html
 
 
 

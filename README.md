@@ -28,6 +28,9 @@
 - U-Net
 - R-CNN
 
+**4. Implementation**
+
+
 
 ## 1. Principles of Convolutional Neural Network
 
@@ -687,21 +690,46 @@ Below is a summary of the 3 types of R-CNN:
   <img src= "https://user-images.githubusercontent.com/59663734/146651712-adecaa8c-6aa6-4906-bbe1-7cbd3a5a617a.png" />
 </p>
 
-
-
-
-
 #### 3.4.7 Mask R-CNN
 
+Mask R-CNN is used for ```Instance Segmentation```, that is, it detects objects in an image and generates a high-quality segmentation mask for each instance. It extends Faster R-CNN to **pixel-level** image segmentation and adds a third branch for predicting an ```object mask``` in parallel with the existing branches for classification and localization. The mask branch is a small FC network applied to each RoI, predicting a segmentation mask in a pixel-to-pixel manner.
+
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/146674359-1b2c0808-fc70-47f0-be3f-3750124bf199.png" />
+</p>
+
+Pixel-level segmentation requires more precise and fined-grained pixel-to-pixel alignment that is received in bounding boxes therefore, Mask R-CNN improves the ROI pooling layer to a ```RoIAlign``` layer so as RoI can be better and more precisely mapped to the regions of the original image.
+
+Furthermore, Mask R-CNN is simple to implement and train given the Faster R-CNN framework, which facilitates a wide range of flexible architecture designs. Additionally, the mask branch only adds a small computational overhead, enabling a fast system and rapid experimentation.
 
 
+Below is the designs of R-CNN, Fast R-CNN, Faster R-CNN and Mask R-CNN:
+
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/146675166-d09ef6e9-4fa6-4a57-b6c4-91ca6088cb1c.png" />
+</p>
 
 To sum up:
 
 - **R-CNN**: Propose regions. Classify porposed regions one at a time  and output label with SVM and bounding box with regression. 
 - **Fast R-CNN**: Performing feature extraction over the image **before** proposing regions, thus only running one CNN over the entire image instead of 2000 CNN’s over 2000 overlapping regions. Replacing the SVMs with a softmax layer, thus extending the neural network for predictions instead of creating a new model.
 - **Faster R-CNN**: Instead of Selective Search algorithm, it uses RPN (Region Proposal Network) to select the best ROIs automatically to be passed for ROI Pooling. Faster R-CNN = RPN + Fast R-CNN
-- **Mask R-CNN**: 
+- **Mask R-CNN**: It is a Faster R-CNN model with image segmentation.
+
+
+## 4. Implementation
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## Conclusion
 

@@ -725,7 +725,17 @@ To sum up:
 
 
 
+### 4.1 Data Collection
 
+
+
+
+### 4.2 Model Training
+
+
+
+
+### 4.3 Model Prediction
 
 
 

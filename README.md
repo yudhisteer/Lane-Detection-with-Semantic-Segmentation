@@ -30,6 +30,10 @@
 
 **4. Implementation**
 
+- Data Collection
+- Model Training
+- Model Prediction
+
 
 
 ## 1. Principles of Convolutional Neural Network

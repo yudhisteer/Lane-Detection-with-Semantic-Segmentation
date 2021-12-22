@@ -722,8 +722,7 @@ To sum up:
 
 
 ## 4. Implementation
-We will use the [Berkeley DeepDrive 100k Dataset](url)
-
+We will use the [Berkeley DeepDrive 100k Dataset](https://bdd-data.berkeley.edu/). The dataset is in two parts: **images** and **segmentation mask**. The Images folder consists of **train**, **eval** and **test** folders which contains ```70,000```, ```10,000``` and ```20,000``` images. The pixel-mask folder contains a ```train``` and ```eval``` folder with the same number of images as the train and eval folders in the Images main directory. I downloaded the Images folder and Driveable maps, zipped and uploaded them on my Google Drive. I will use Google Colab to train the model. 
 
 
 ### 4.1 Data Collection

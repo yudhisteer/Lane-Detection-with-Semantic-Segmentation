@@ -849,22 +849,82 @@ To avoid overfitting, we will use ```Dropout```. To make the network better, we 
 #### 4.2.1 Basic Encoder-Decoder Architecture
 We will start by building a simple encoder-decoder model. 
 
-1. For the Encoder, we will ```batch normalize``` the input and add two convolutions of ```8``` filters of size ```5x5``` with zero padding and an element-wise rectified linear non-linearity (ReLU) max(0, x) is applied. Following that, max-pooling with a 2 × 2 window and stride 2 (non-overlapping window) is performed. Max-pooling is used to achieve translation invariance over small spatial shifts in the input image.
+1. For the Encoder, we will ```batch normalize``` the input and add two convolutions of ```32``` filters of size ```3x3``` with zero padding and an element-wise rectified linear non-linearity (ReLU) max(0, x) is applied. Following that, max-pooling with a 2 × 2 window and stride 2 (non-overlapping window) is performed. Max-pooling is used to achieve translation invariance over small spatial shifts in the input image.
 
-2. For the Decoder, we UpSample the feature map using ```bilinear interpolation```. We then add two ```Transpose convolution``` with 8 and 5 filters accordingly, filter size of ```5x5```with strides 1 in both directions and ReLU activation function. We end with a ```softmax``` function.
+2. For the Decoder, we UpSample the feature map using ```bilinear interpolation```. We then add two ```Transpose convolution``` with 32 filters, filter size of ```3x3```with strides 1 in both directions and ReLU activation function. We then end with a ```softmax``` function.
 
-In summary, 
+The architecture is shown below:
+
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/147147862-b8c291dd-9823-4e03-9278-f425a2dec145.png" />
+</p>
 
 
+```
+def simple_encoder_decoder(input_shape=(80,160,3), pool_size=(2,2)):
 
+    #--- Encoder
+    input_x = Input(shape=(80,160,3))
+    x = BatchNormalization(input_shape=input_shape)(input_x)
+    x = Conv2D(32, (3, 3), padding='valid', strides=(1,1), activation = 'relu')(x)
+    x = BatchNormalization()(x)
+    x = Conv2D(32, (3, 3), padding='valid', strides=(1,1), activation = 'relu')(x)
+    x = BatchNormalization()(x)
+    x = MaxPooling2D(pool_size=pool_size)(x)
 
+    #--- Decoder
+    x = UpSampling2D(size=pool_size, interpolation='bilinear')(x)
+    x = Conv2DTranspose(64, (3, 3), padding='valid', strides=(1,1), activation = 'relu')(x)
+    x = BatchNormalization()(x)
+    x = Conv2DTranspose(64, (3, 3), padding='valid', strides=(1,1), activation = 'relu')(x)
+    x = BatchNormalization()(x)
+    x = Conv2D(3, (1,1), padding='valid', strides=(1,1), activation='softmax')(x)
+    return Model(input_x,x)
 
+model = simple_encoder_decoder()
+model.summary()
+```
 
-**Note: **
+In summary, we have ```66,153``` trainable parameters. It is important to check that the last convolution with the softmax function output a shape similar to our input image - ```(80, 160, 3)```.
+
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/147147727-2db7fd54-6cf0-4cd7-94ff-f75d15c5d127.png" />
+</p>
+
+**Note:**
 
 - ```UpSampling2D``` is just a simple scaling up of the image by using ```nearest neighbour``` or ```bilinear interpolation upsampling```. The advantage is it is a low computational cost process.
 - ```Conv2DTranspose``` is a convolution operation whose kernel is learnt (just like normal conv2d operation) while training our model. Using Conv2DTranspose will also upsample the input but the key difference is the model should learn what is the best upsampling for the job.
 
+#### 4.2.2 Hyperparameters
+We choose a small ```batch size``` of ```16``` and a small learning rate ```0.001```. We will train the model with an epoch of ```30```:
+
+```
+batch_size = 16
+epochs = 30
+pool_size = (2, 2)
+learning_rate = 0.001
+steps_per_epoch = len(X_train)/batch_size
+input_shape = X_train.shape[1:]
+print(input_shape)
+```
+
+#### 4.2.3 Training
+
+We will use the ```ImageDataGenerator``` to further augment our dataset. The technique will help us for images with shadows. Using ```adam``` optimizer and a ```categorizal crossentropy``` loss function since we have ```3``` classes we **compile** and **fit** the model.
+
+```
+#--- Channel shifts help with shadows slightly
+datagen = ImageDataGenerator(channel_shift_range=0.2)
+# datagen.fit(X_train)
+
+#---- Compile model
+model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+
+#--- Fit model
+history = model.fit(datagen.flow(X_train, y_train, batch_size=batch_size), steps_per_epoch=steps_per_epoch, 
+          epochs=epochs, verbose=1, validation_data=(X_val, y_val))
+```
 
 #### 4.2.2 FCN Architecture
 

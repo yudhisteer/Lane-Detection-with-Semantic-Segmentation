@@ -733,7 +733,48 @@ Each of the images has a corresponding pixel-mask as shown below. The have the s
 
 It is important to note here that both our images and our pixel-mask has ```3``` channels. Although the pixel-mask has only blue and red colors, the green channel is set to ```0```.
 
-**Note:** Each image and segmentation mask is of size ```1280 x 720```. The ```train``` images dataset is ```3.77 GB```. For memory issue, we will choose 3000 images and their corresponding pixel-mask. We will resize them to ```160 x 80``` to reduce the size to ```109 MB```. 
+**Note:** Each image and segmentation mask is of size ```1280 x 720```. The ```train``` images dataset is ```3.77 GB```. For memory issue, we will choose 3000 images and their corresponding pixel-mask. We will resize them to ```160 x 80``` to reduce the size to ```109 MB```. '
+
+#### 4.1.1 Load Data
+We start by unpickle our data and visualize a random image with its corresponding pixel-mask:
+
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/147101810-1d97bdd8-ed83-4919-8477-77c8dd44bf1f.png" />
+</p>
+
+We can clearly see how the image quality has decreased since we reduced the size of the image.
+
+#### 4.1.2 Process Label
+Our goal is to predict the driveable lane and the adjacent ones. In other words, we are dealing with a ```multi-class classification``` problem. Our label dataset has ```3``` channels with ```2``` classes. That is, the red mask is one class and the blue one is another class. The minimum value of the labels is ```0``` and the maximum is ```1```. The background is set to black - ```0``` value. To fit an Encoder-Decoder Neural Network; we will need to preprocess our labels. Currently, your labels are RGB images of dimension ```160 x 80 x 3```. We have 3 ways to process our labels:
+
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/147103521-4b660e33-38bc-4b1c-ac08-ad7c64699ea7.png" />
+</p>
+
+**1. Class labels:** Each Pixel is a number representing a class. The output is simply a matrix of ```1``` channel with these numbers.
+
+**2. RGB mappings:** As we are only working with 2 classes, and they all are colored either red or blue and it is quite easy to work with. If we had more classes, some pixels will not be  excatly ```0``` or ```255```, they will have some intensity value.
+
+**3. One Hot vector:**  Each class is one hot encoded. That is we predict for each class if it is ```0``` or ```1```.
+
+We will use the ```One Hot vector``` solution whereby we set the background to one class also. We will convert every black pixel into a green one. Then, the network would have to label a pixel as either ```green (background)```, ```red (driveable)```, or ```blue (adjacent)```.
+
+We create an empty list ```new_labels``` in which we will append our processed labelled image. We loop through each label and through each pixel in that label and if the label has a value of ```[0,0,0]``` we set it to ```[0,1,0]``` where ```1``` represents the Green channel in RGB.
+
+```
+#--- Convert background pixel to green
+new_labels = []
+for lab in labels:
+    for x in range(lab.shape[0]):
+        for y in range(lab.shape[1]):
+            if (np.all(lab[x][y]==[0,0,0])):
+                lab[x][y]=[0,1,0]
+    new_labels.append(lab)
+```
+ 
+
+#### 4.1.3 Split Dataset
+
 
 
 ### 4.2 Model Training

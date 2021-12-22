@@ -833,10 +833,46 @@ We convert our datasets into an ```ndarray``` such that the image and label data
 # Test size may go from 10% to 30%
 X_train, X_val, y_train, y_val = train_test_split(images, labels, test_size=0.15)
 ```
- We now have ```51000``` images in the train dataset and ```900``` images in the validation dataset.
+ We now have ```5100``` images in the train dataset and ```900``` images in the validation dataset.
 
 ### 4.2 Model Training
+In order to train our model, we will need a ```Fully Convolutional Neural Network```, i.e, a CNN without any dense layers. As explained above, our FCN consists of an **Encoder** and a **Decoder**.
 
+**What should we implement?**
+
+- Create an encoder that learns the features
+- Create a decoder that upsamples to the original image size
+- Implement advanced techniques such as ```1x1``` convolutions, or skip connections to make the neural network better.
+
+To avoid overfitting, we will use ```Dropout```. To make the network better, we will use ```Batch Normalization``` after the input.
+
+#### 4.2.1 Basic Encoder-Decoder Architecture
+We will start by building a simple encoder-decoder model. 
+
+1. For the Encoder, we will ```batch normalize``` the input and add two convolutions of ```8``` filters of size ```5x5``` with zero padding and an element-wise rectified linear non-linearity (ReLU) max(0, x) is applied. Following that, max-pooling with a 2 × 2 window and stride 2 (non-overlapping window) is performed. Max-pooling is used to achieve translation invariance over small spatial shifts in the input image.
+
+2. For the Decoder, we UpSample the feature map using ```bilinear interpolation```. We then add two ```Transpose convolution``` with 8 and 5 filters accordingly, filter size of ```5x5```with strides 1 in both directions and ReLU activation function. We end with a ```softmax``` function.
+
+In summary, 
+
+
+
+
+
+
+**Note: **
+
+- ```UpSampling2D``` is just a simple scaling up of the image by using ```nearest neighbour``` or ```bilinear interpolation upsampling```. The advantage is it is a low computational cost process.
+- ```Conv2DTranspose``` is a convolution operation whose kernel is learnt (just like normal conv2d operation) while training our model. Using Conv2DTranspose will also upsample the input but the key difference is the model should learn what is the best upsampling for the job.
+
+
+#### 4.2.2 FCN Architecture
+
+
+#### 4.2.3 SegNet Architecture
+
+
+#### 4.2.4 U-Net Architecture
 
 
 

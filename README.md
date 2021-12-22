@@ -785,7 +785,42 @@ The advantage of setting our background to green is that the neural network will
 
 
 #### 4.1.3 Data Augmentation
- We took only ```3%``` of our dataset since the GPU ran out of memory. ```3000``` images are not enough and in order to increase our dataset we will perform ```Data Augmentation```
+ We took only ```3%``` of our dataset since the GPU ran out of memory. ```3000``` images are not enough and in order to increase our dataset we will perform ```Data Augmentation```. Several data augmentation techniques I used before were: **Random Background, Random Gaussian Blur, Random Flip, Random Rotate** and **Random Noise**. The quality of the image is already low so I will not use random blur or noise. We cannot change the background and random rotate is not practical for us. So I will use only ```random flip``` to augment the dataset.
+ 
+ We start by creating a function and use cv2.flip to flip the image only vertically and NOT horizontally:
+ 
+ ```
+#--- Function to flip image vertically
+def flip_image(img):
+    return cv2.flip(img, 1)
+ ```
+
+We create two empty lists to store our augmented images and labels. 
+```
+#--- Empty lists to store augmented images and labels
+flipped_images = []
+flipped_labels = []
+
+#--- Loop through images and labels to flip using flip_image function
+for i in images:
+    flipped_images.append(flip_image(i))
+
+for i in labels:
+    flipped_labels.append(flip_image(i))
+```
+We will then merge our original datasets and the augmented ones using ```.extend``` method:
+
+```
+#--- Merge original datasets and augemneted datasets
+images.extend(flipped_images)
+new_labels.extend(flipped_labels)
+```
+Below is the result of the original image with its corresponding label and the flipped image with the flipped label:
+
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/147119677-c997d612-e49b-47ce-a594-153dae743b92.png" />
+</p>
+
 
 
 

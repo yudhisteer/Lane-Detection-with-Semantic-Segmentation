@@ -821,17 +821,19 @@ Below is the result of the original image with its corresponding label and the f
   <img src= "https://user-images.githubusercontent.com/59663734/147119677-c997d612-e49b-47ce-a594-153dae743b92.png" />
 </p>
 
-
-
+We now have doubled our datasets to have ```6000``` images.
 
 
 #### 4.1.4 Split Dataset
+We will now slit our dataset into **training** and **validation** datasets. 
 
+We convert our datasets into an ```ndarray``` such that the image and label dataset is of dimension ```(6000, 80, 160, 3)```. That is we have ```6000``` images of size ```160 x 80``` with ```3``` channels. We then shuffle our image and label datasets accordingly. Using ```Sklearn``` library, we will import the ```train_test_split``` function and set our test size to be 15% of our original datasets. 
 
-
-
-
-
+```
+# Test size may go from 10% to 30%
+X_train, X_val, y_train, y_val = train_test_split(images, labels, test_size=0.15)
+```
+ We now have ```51000``` images in the train dataset and ```900``` images in the validation dataset.
 
 ### 4.2 Model Training
 

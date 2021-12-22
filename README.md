@@ -745,10 +745,10 @@ We start by unpickle our data and visualize a random image with its correspondin
 We can clearly see how the image quality has decreased since we reduced the size of the image.
 
 #### 4.1.2 Process Label
-Our goal is to predict the driveable lane and the adjacent ones. In other words, we are dealing with a ```multi-class classification``` problem. Our label dataset has ```3``` channels with ```2``` classes. That is, the red mask is one class and the blue one is another class. The minimum value of the labels is ```0``` and the maximum is ```1```. The background is set to black - ```0``` value. To fit an Encoder-Decoder Neural Network; we will need to preprocess our labels. Currently, your labels are RGB images of dimension ```160 x 80 x 3```. We have 3 ways to process our labels:
+Our goal is to predict the driveable lane and the adjacent ones. In other words, we are dealing with a ```multi-class classification``` problem. Our label dataset has ```3``` channels with ```2``` classes. That is, the red mask is one class and the blue one is another class and the green channe is currently set to ```0```. The minimum value of the labels is ```0``` and the maximum is ```1```. The background is set to black - ```0``` value. To fit an Encoder-Decoder Neural Network; we will need to preprocess our labels. Currently, your labels are RGB images of dimension ```160 x 80 x 3```. We have 3 ways to process our labels:
 
 <p align="center">
-  <img src= "https://user-images.githubusercontent.com/59663734/147103521-4b660e33-38bc-4b1c-ac08-ad7c64699ea7.png" />
+  <img src= "https://user-images.githubusercontent.com/59663734/147106450-0d4d8d9a-264d-4e9c-bc7e-a8723f4e7d66.png" />
 </p>
 
 **1. Class labels:** Each Pixel is a number representing a class. The output is simply a matrix of ```1``` channel with these numbers.
@@ -757,23 +757,44 @@ Our goal is to predict the driveable lane and the adjacent ones. In other words,
 
 **3. One Hot vector:**  Each class is one hot encoded. That is we predict for each class if it is ```0``` or ```1```.
 
-We will use the ```One Hot vector``` solution whereby we set the background to one class also. We will convert every black pixel into a green one. Then, the network would have to label a pixel as either ```green (background)```, ```red (driveable)```, or ```blue (adjacent)```.
+We will use the ```One Hot vector``` solution whereby we set the background to a class also. We will convert every **black** pixel into a **green** one. Then, the network would have to label a pixel as either ```green (background)```, ```red (driveable)```, or ```blue (adjacent)``` - a multi-class classification problem with ```3``` classes.
 
-We create an empty list ```new_labels``` in which we will append our processed labelled image. We loop through each label and through each pixel in that label and if the label has a value of ```[0,0,0]``` we set it to ```[0,1,0]``` where ```1``` represents the Green channel in RGB.
+We create a copy our our array ```labels``` and an empty list ```new_labels``` in which we will append our processed labelled image. We loop through each label and through each pixel in that label and if the label has a value of ```[0,0,0]```(black) we set it to ```[0,1,0]``` where ```1``` represents the new value of the pixel in the the Green channel of RGB.
 
 ```
 #--- Convert background pixel to green
-new_labels = []
-for lab in labels:
+ori_labels = labels.copy() #---Create copy or original label data so as labels are not affected
+new_labels = [] #--- Processed labels will be appended
+
+for lab in ori_labels:
     for x in range(lab.shape[0]):
         for y in range(lab.shape[1]):
-            if (np.all(lab[x][y]==[0,0,0])):
-                lab[x][y]=[0,1,0]
+            if (np.all(lab[x][y]==[0,0,0])): #--- Check if pixel is black
+                lab[x][y]=[0,1,0] #--- If so then convert to green
     new_labels.append(lab)
 ```
- 
 
-#### 4.1.3 Split Dataset
+The processed label has now ```3``` classes as shown below. For prediction we will set the Green channel to zero since we are only interested in visualizing the lanes. 
+
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/147110607-d2a3f890-061e-4de7-bb38-8910219a4956.png" />
+</p>
+
+The advantage of setting our background to green is that the neural network will now also predict the backgound on top of the lanes. In this way, we can prevent the NN to classify the background as either only red or blue. 
+
+
+
+#### 4.1.3 Data Augmentation
+ We took only ```3%``` of our dataset since the GPU ran out of memory. ```3000``` images are not enough and in order to increase our dataset we will perform ```Data Augmentation```
+
+
+
+
+#### 4.1.4 Split Dataset
+
+
+
+
 
 
 

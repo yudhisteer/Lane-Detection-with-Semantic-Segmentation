@@ -856,26 +856,30 @@ We will start by building a simple encoder-decoder model.
 The architecture is shown below:
 
 <p align="center">
-  <img src= "https://user-images.githubusercontent.com/59663734/147147862-b8c291dd-9823-4e03-9278-f425a2dec145.png" />
+  <img src= "https://user-images.githubusercontent.com/59663734/147149130-b6b02ada-bd1b-4f8c-a49a-6d1f94103b68.png" />
 </p>
 
 
 ```
 def simple_encoder_decoder(input_shape=(80,160,3), pool_size=(2,2)):
 
-    #--- Encoder
+    ''' #--- Encoder'''
     input_x = Input(shape=(80,160,3))
     x = BatchNormalization(input_shape=input_shape)(input_x)
+    ## CONV 1
     x = Conv2D(32, (3, 3), padding='valid', strides=(1,1), activation = 'relu')(x)
     x = BatchNormalization()(x)
+    ## CONV 2
     x = Conv2D(32, (3, 3), padding='valid', strides=(1,1), activation = 'relu')(x)
     x = BatchNormalization()(x)
     x = MaxPooling2D(pool_size=pool_size)(x)
-
-    #--- Decoder
+   
+    '''#--- Decoder''' 
+    ## UPSAMPLING 2
     x = UpSampling2D(size=pool_size, interpolation='bilinear')(x)
     x = Conv2DTranspose(64, (3, 3), padding='valid', strides=(1,1), activation = 'relu')(x)
     x = BatchNormalization()(x)
+    ## UPSAMPLING 1
     x = Conv2DTranspose(64, (3, 3), padding='valid', strides=(1,1), activation = 'relu')(x)
     x = BatchNormalization()(x)
     x = Conv2D(3, (1,1), padding='valid', strides=(1,1), activation='softmax')(x)
@@ -900,10 +904,11 @@ In summary, we have ```66,153``` trainable parameters. It is important to check 
 We choose a small ```batch size``` of ```16``` and a small learning rate ```0.001```. We will train the model with an epoch of ```30```:
 
 ```
+#--- tune hyperparameters
 batch_size = 16
 epochs = 30
 pool_size = (2, 2)
-learning_rate = 0.001
+learning_rate = 0.001 #--- 0.002
 steps_per_epoch = len(X_train)/batch_size
 input_shape = X_train.shape[1:]
 print(input_shape)
@@ -916,7 +921,6 @@ We will use the ```ImageDataGenerator``` to further augment our dataset. The tec
 ```
 #--- Channel shifts help with shadows slightly
 datagen = ImageDataGenerator(channel_shift_range=0.2)
-# datagen.fit(X_train)
 
 #---- Compile model
 model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
@@ -926,7 +930,8 @@ history = model.fit(datagen.flow(X_train, y_train, batch_size=batch_size), steps
           epochs=epochs, verbose=1, validation_data=(X_val, y_val))
 ```
 
-#### 4.2.2 FCN Architecture
+#### 4.2.2 FCN-8 Architecture
+Remember that for the Encoder part of our model, the latter only extract features just as a normal CNN. As such, the FCN uses ```VGG16``` for its encoder. Therefore , we will use a pretrained ```VGG-16``` network for the feature extraction path, then followed by an ```FCN-8``` network for upsampling and generating the predictions. 
 
 
 #### 4.2.3 SegNet Architecture

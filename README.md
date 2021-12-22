@@ -722,12 +722,16 @@ To sum up:
 
 
 ## 4. Implementation
-We will use the [Berkeley DeepDrive 100k Dataset](https://bdd-data.berkeley.edu/). The dataset is in two parts: **images** and **segmentation mask**. The Images folder consists of **train**, **eval** and **test** folders which contains ```70,000```, ```10,000``` and ```20,000``` images. The pixel-mask folder contains a ```train``` and ```eval``` folder with the same number of images as the train and eval folders in the Images main directory. I downloaded the Images folder and Driveable maps, zipped and uploaded them on my Google Drive. I will use Google Colab to train the model. 
-
+We will use the [Berkeley DeepDrive 100k Dataset](https://bdd-data.berkeley.edu/). The dataset is in two parts: **images** and **segmentation mask**. The Images folder consists of **train**, **eval** and **test** folders which contains ```70,000```, ```10,000``` and ```20,000``` images. The segmentation mask folder contains a ```train``` and ```eval``` folder with the same number of images as the train and eval folders in the Images main directory.
 
 ### 4.1 Data Collection
+Each of the images has a corresponding pixel-mask as shown below. The have the same file name so as to create a mapping of images to mask. The red part represents the lane in which the vehicle is driving, and the blue ones represent the adjacent lanes.
 
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/147089636-a785ec19-cbd2-4876-8bb1-dc86037b649c.png" />
+</p>
 
+**Note:** Each image and segmentation mask is of size ```1280 x 720```. The ```train``` images dataset is ```3.77 GB```. For memory issue, we will choose 3000 images and their corresponding pixel-mask. We will resize them to ```160 x 80``` to reduce the size to ```109 MB```. 
 
 
 ### 4.2 Model Training

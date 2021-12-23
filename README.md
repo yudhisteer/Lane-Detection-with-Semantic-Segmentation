@@ -917,7 +917,7 @@ In summary, we have ```66,153``` trainable parameters. It is important to check 
 - ```UpSampling2D``` is just a simple scaling up of the image by using ```nearest neighbour``` or ```bilinear interpolation upsampling```. The advantage is it is a low computational cost process.
 - ```Conv2DTranspose``` is a convolution operation whose kernel is learnt (just like normal conv2d operation) while training our model. Using Conv2DTranspose will also upsample the input but the key difference is the model should learn what is the best upsampling for the job.
 
-#### 4.2.2 Hyperparameters
+##### Hyperparameters
 We choose a small ```batch size``` of ```16``` and a small learning rate ```0.001```. We will train the model with an epoch of ```30```:
 
 ```
@@ -931,7 +931,7 @@ input_shape = X_train.shape[1:]
 print(input_shape)
 ```
 
-#### 4.2.3 Training
+##### Training
 
 We will use the ```ImageDataGenerator``` to further augment our dataset. The technique will help us for images with shadows. Using ```adam``` optimizer and a ```categorizal crossentropy``` loss function since we have ```3``` classes we **compile** and **fit** the model.
 
@@ -946,6 +946,16 @@ model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accur
 history = model.fit(datagen.flow(X_train, y_train, batch_size=batch_size), steps_per_epoch=steps_per_epoch, 
           epochs=epochs, verbose=1, validation_data=(X_val, y_val))
 ```
+
+##### Results
+
+
+
+
+
+
+
+
 
 #### 4.2.2 FCN-8 Architecture
 The original Fully Convolutional Network (FCN) learns a mapping from pixels to pixels, without extracting the region proposals. Contrary to CNNs, FCNs only have convolutional and pooling layers which give them the ability to make predictions on arbitrary-sized inputs. Remember that for the Encoder part of our model, the latter only extract features just as a normal CNN. As such, the FCN uses ```VGG16``` for its encoder. Therefore , we will use a pretrained ```VGG-16``` network for the feature extraction path, then followed by an ```FCN-8``` network for upsampling and generating the predictions. 

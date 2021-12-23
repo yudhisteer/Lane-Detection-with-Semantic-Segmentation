@@ -479,9 +479,24 @@ There are two types of image segmentation, **semantic segmentation** and **insta
 
 With semantic segmentation, all objects of the same type form a single classification. The image below has highlighted all vehicles as one item. The word semantic refers to **meaning** so all parts of the image that have the **same meaning**, and in this case all vehicles, are grouped into the same segment. 
 
+At a high level point, semantic segmentation is one of the high-level task that paves the way towards complete scene understanding. Semantic segmentation is a natural step in the progression from ```coarse``` to ```fine``` inference. 
+
+We first have:
+
+**1. Classification:** it consists of making a prediction for a whole input.
+**2. Localization:** The next step is localization / detection, which provides not only the classes but also additional information regarding the ```spatial location``` of those classes.
+**3. Semantic segmentation:** fine-grained inference is achieved by making dense predictions inferring labels for every pixel, so that each pixel is labeled with the class of its enclosing object ore region.
+
 <p align="center">
   <img src= "https://user-images.githubusercontent.com/59663734/144401257-c736ee05-fecb-499c-ae13-89454b6abb41.png" />
 </p>
+
+A general semantic segmentation architecture can be broadly thought of as an ```encoder``` network followed by a ```decoder``` network:
+
+- _The encoder is usually is a pre-trained classification network like VGG/ResNet._
+- _The task of the decoder is to semantically project the discriminative features (lower resolution) learnt by the encoder onto the pixel space (higher resolution) to get a dense classification._
+
+_Unlike classification where the end result of the very deep network is the only important thing, semantic segmentation not only requires discrimination at pixel level but also a mechanism to project the discriminative features learnt at different stages of the encoder onto the pixel space._
 
 In semantic segmentation, all objects of the same class are regarded as one segment. **Each pixel is usually associated with a class.** For example, all persons in an image are treated as one segment, cars as another segment and so on. Popular machine learning models that solve semantic segmentation are: **Fully Convolutional Neural Networks, U-net, DeepLab, ...**
 
@@ -934,6 +949,11 @@ history = model.fit(datagen.flow(X_train, y_train, batch_size=batch_size), steps
 
 #### 4.2.2 FCN-8 Architecture
 Remember that for the Encoder part of our model, the latter only extract features just as a normal CNN. As such, the FCN uses ```VGG16``` for its encoder. Therefore , we will use a pretrained ```VGG-16``` network for the feature extraction path, then followed by an ```FCN-8``` network for upsampling and generating the predictions. 
+
+
+**Note:**
+
+```VGG-16```: This Oxford’s model won the 2013 ImageNet competition with ```92.7%``` accuracy. It uses a stack of convolution layers with **small receptive fields** in the first layers instead of few layers with **big receptive fields**.
 
 
 #### 4.2.3 SegNet Architecture

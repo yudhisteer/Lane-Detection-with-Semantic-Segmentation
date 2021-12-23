@@ -949,9 +949,15 @@ history = model.fit(datagen.flow(X_train, y_train, batch_size=batch_size), steps
 
 ##### Results
 
+Below is the results after training the basic encoder-decoder model for 10 epochs:
 
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/147229110-860bd35d-4ca8-43d1-bcdf-9187a7a95234.png" />
+</p>
 
+We reached an accuracy of ```86.97%``` for our training dataset and an accuracy of ```86.95%``` for the validation dataset. Although the accuracy is mediocre, we should remind ourselves that our model had only 2 layers in the encoder and decoder. Even with such a simple model we could reach accuracies greater than ```75%```.
 
+##### Testing
 
 
 

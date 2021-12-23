@@ -1007,6 +1007,13 @@ We will randomly pick an image from our dataset and display the prediction along
 
 **Note:** The model was succesfull in differentiating the lanes and the background. However, it predicted all the lanes to be the driveable one. It failed to predict the adjacent lanes(blue). We just had some faint blue pixels on the left. With such a simple model, it can be justified that it could not have a correct prediction. But still, it was able to make correct predictions for the road which is still awesome!
 
+Below shows the prediction on an unseen image by the model:
+
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/147268854-b9086d7c-de2a-47ec-9ffd-32be00d0dd84.png" />
+</p>
+
+
 We will now need to build a more complex model, with more parameters to improve our accuracy to make better predictions.
 
 
@@ -1016,6 +1023,58 @@ The original Fully Convolutional Network (FCN) learns a mapping from pixels to p
 
 **Note:**
 ```VGG-16```: This Oxford’s model won the 2013 ImageNet competition with ```92.7%``` accuracy. It uses a stack of convolution layers with **small receptive fields** in the first layers instead of few layers with **big receptive fields**.
+
+We will now build the model and prepare it for training. As mentioned earlier, this will use a ```VGG-16``` network for the encoder and ```FCN-8``` for the decoder.
+
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/147269293-cea5808c-0a03-4343-8471-46967f39b20e.png" />
+</p>
+
+
+##### Encoder
+There are five blocks of layers in this encoder architecture and each finishes with a pooling. VGG networks have repeating blocks so to make the code neat, it's best to create a function to encapsulate this process. Each block has convolutional layers followed by a max pooling layer which downsamples the image. Below is the architecture of our encoder:
+
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/147279576-4db29b93-5286-479e-985d-a21d38453f0f.png" />
+</p>
+
+Note that we suppressed the FC layers in a classic VGG16 network and replaced it with a convolutional layer of ```7x7``` filter size with ```4096``` filters followed by another ```4096```filters of dimension ```1x1```.
+
+We start by creating a funcrtion called ```block``` which will loop through the number of convolutions, creating a Conv2D layer with the required number of filters, kernel size and activation. This is then followed by a pooling layer with a specified pool size and strides. 
+
+```
+def block(x, n_convs, filters, kernel_size, activation, pool_size, pool_stride, block_name):
+  '''
+  Defines a block in the VGG network.
+
+  Args:
+    x (tensor) -- input image
+    n_convs (int) -- number of convolution layers to append
+    filters (int) -- number of filters for the convolution layers
+    activation (string or object) -- activation to use in the convolution
+    pool_size (int) -- size of the pooling layer
+    pool_stride (int) -- stride of the pooling layer
+    block_name (string) -- name of the block
+
+  Returns:
+    tensor containing the max-pooled output of the convolutions
+  '''
+
+  for i in range(n_convs):
+      x = tf.keras.layers.Conv2D(filters=filters, kernel_size=kernel_size, activation=activation, padding='same', name="{}_conv{}".format(block_name, i + 1))(x)
+    
+  x = tf.keras.layers.MaxPooling2D(pool_size=pool_size, strides=pool_stride, name="{}_pool{}".format(block_name, i+1 ))(x)
+
+  return x
+```
+
+We have ```5``` main blocks in our network therefore, we will chain five calls to this function.  So our first block p1 will have two convolution layers, with 64 filters each followed by a two by two pooling Our second block called p2 is similar but instead we'll have a 128 filters in each of the convolutional layers. And similarly the other three blocks are created by a call to the block function specifying 256, 512 and 512 filters respectively.
+
+
+##### VGG16
+
+##### Decoder
+
 
 
 #### 4.2.3 SegNet Architecture

@@ -1027,7 +1027,7 @@ The original Fully Convolutional Network (FCN) learns a mapping from pixels to p
 We will now build the model and prepare it for training. As mentioned earlier, this will use a ```VGG-16``` network for the encoder and ```FCN-8``` for the decoder.
 
 <p align="center">
-  <img src= "https://user-images.githubusercontent.com/59663734/147269293-cea5808c-0a03-4343-8471-46967f39b20e.png" />
+  <img src= "https://user-images.githubusercontent.com/59663734/147282316-c00e6b95-f350-4c39-9f38-651b604aefb9.png" />
 </p>
 
 
@@ -1068,13 +1068,163 @@ def block(x, n_convs, filters, kernel_size, activation, pool_size, pool_stride, 
   return x
 ```
 
-We have ```5``` main blocks in our network therefore, we will chain five calls to this function.  So our first block p1 will have two convolution layers, with 64 filters each followed by a two by two pooling Our second block called p2 is similar but instead we'll have a 128 filters in each of the convolutional layers. And similarly the other three blocks are created by a call to the block function specifying 256, 512 and 512 filters respectively.
+We have ```5``` main blocks in our network therefore, we will chain five calls to this function.  So our first block **p1** will have two convolution layers, with ```64``` filters each followed by a two by two pooling Our second block called **p2** is similar but instead we'll have a ```128``` filters in each of the convolutional layers. And similarly the other three blocks are created by a call to the block function specifying ```256```, ```512``` and ```512``` filters respectively.
 
+```
+def VGG_16(image_input):
+  '''
+  This function defines the VGG encoder.
 
-##### VGG16
+  Args:
+    image_input (tensor) - batch of images
+
+  Returns:
+    tuple of tensors - output of all encoder blocks plus the final convolution layer
+  '''
+
+  # create 5 blocks with increasing filters at each stage. 
+  # we will save the output of each block (i.e. p1, p2, p3, p4, p5). "p" stands for the pooling layer.
+  x = block(image_input,n_convs=2, filters=64, kernel_size=(3,3), activation='relu',pool_size=(2,2), pool_stride=(2,2), block_name='block1')
+  p1= x
+
+  x = block(x,n_convs=2, filters=128, kernel_size=(3,3), activation='relu',pool_size=(2,2), pool_stride=(2,2), block_name='block2')
+  p2 = x
+
+  x = block(x,n_convs=3, filters=256, kernel_size=(3,3), activation='relu',pool_size=(2,2), pool_stride=(2,2), block_name='block3')
+  p3 = x
+
+  x = block(x,n_convs=3, filters=512, kernel_size=(3,3), activation='relu',pool_size=(2,2), pool_stride=(2,2), block_name='block4')
+  p4 = x
+
+  x = block(x,n_convs=3, filters=512, kernel_size=(3,3), activation='relu',pool_size=(2,2), pool_stride=(2,2), block_name='block5')
+  p5 = x
+
+  # create the vgg model
+  vgg  = tf.keras.Model(image_input , p5)
+
+  # load the pre-trained weights you downloaded earlier
+  vgg.load_weights(vgg_weights_path) 
+
+  # number of filters for the output convolutional layers
+  n = 4096
+
+  # our input images are 224x224 pixels so they will be downsampled to 7x7 after the pooling layers above.
+  # we can extract more features by chaining two more convolution layers.
+  c6 = tf.keras.layers.Conv2D( n , ( 7 , 7 ) , activation='relu' , padding='same', name="conv6")(p5)
+  c7 = tf.keras.layers.Conv2D( n , ( 1 , 1 ) , activation='relu' , padding='same', name="conv7")(c6)
+
+  # return the outputs at each stage.
+  return (p1, p2, p3, p4, c7)
+```
+
+To summarise our encoder:
+
+- We will create ```5``` blocks with increasing number of filters at each stage.
+- The number of convolutions, filters, kernel size, activation, pool size and pool stride will remain constant.
+- We will load the pretrained weights after creating the ```VGG-16``` network.
+- Additional convolution layers will be appended to extract more features.
+- The output will contain the output of the last layer and the previous four convolution blocks.
 
 ##### Decoder
+FCN-8 had three steps, the step takes an UpSample of ```Pool 5``` and combines it with a prediction from ```Pool 4```.
 
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/147282201-fcbb2a6b-94e2-4b23-9d05-e6cf23328ada.png" />
+</p>
+
+**Step 1:**
+We'll start by passing in the object that defined the network that we created above as the convolutional layers in the network. We can follow this with a ```Conv2D``` transpose layer, that handles the upscaling from the output of the last layer, which is now called ```f5``` to upscale it.
+
+Upscaling can then add width and height to the data in the same way as applying filters with a CNN removes borders from the image. So cropping can help us get back to the right size.
+
+The layer before that is ```F4```, which will also refer to as ```o2``` for consistency with the o in the previous layer. We'll pass this through ```1x1``` filter to get us to the right number of classes for this image. So now we have own ```o2``` which we can merge together.
+
+```
+def fcn8_decoder(convs, n_classes):
+  '''
+  Defines the FCN 8 decoder.
+
+  Args:
+    convs (tuple of tensors) - output of the encoder network
+    n_classes (int) - number of classes
+
+  Returns:
+    tensor with shape (height, width, n_classes) containing class probabilities
+  '''
+
+  # unpack the output of the encoder
+  f1, f2, f3, f4, f5 = convs
+  
+  # upsample the output of the encoder then crop extra pixels that were introduced
+  o = tf.keras.layers.Conv2DTranspose(n_classes , kernel_size=(4,4) ,  strides=(2,2) , use_bias=False )(f5)
+  o = tf.keras.layers.Cropping2D(cropping=(1,1))(o)
+
+  # load the pool 4 prediction and do a 1x1 convolution to reshape it to the same shape of `o` above
+  o2 = f4
+  o2 = ( tf.keras.layers.Conv2D(n_classes , ( 1 , 1 ) , activation='relu' , padding='same'))(o2)
+
+  # add the results of the upsampling and pool 4 prediction
+  o = tf.keras.layers.Add()([o, o2])
+```
+**Step 2:**
+The next step is to get the results that we just got from  ```Pool 4``` and ```Pool 5``` UpSample them and then combine them with ```Pool 3```.
+
+The pattern is the same. The previous layer which was the summation of Pools, ```4``` and ```5``` is called ```o```, so we'll follow that with a Conv2D transpose to upscale it. We'll pass it through a cropping layer to remove any excess pixels from the borders. The third layer Pooled output is at ```f3```. So if we follow that by a convolutional layer that has a ```1x1``` filter and ```n``` number of classes of them, we will reduce its dimensionality to the number of classes that we want to segment. And then we'll just add up the result of these two layers.
+
+```
+  # upsample the resulting tensor of the operation you just did
+  o = (tf.keras.layers.Conv2DTranspose( n_classes , kernel_size=(4,4) ,  strides=(2,2) , use_bias=False ))(o)
+  o = tf.keras.layers.Cropping2D(cropping=(1, 1))(o)
+
+  # load the pool 3 prediction and do a 1x1 convolution to reshape it to the same shape of `o` above
+  o2 = f3
+  o2 = ( tf.keras.layers.Conv2D(n_classes , ( 1 , 1 ) , activation='relu' , padding='same'))(o2)
+
+  # add the results of the upsampling and pool 3 prediction
+  o = tf.keras.layers.Add()([o, o2])
+```
+**Step 3:**
+Our last step is to take our current some value and upscale it by ```8x```.
+With the key being the kernel size, it's taking a ```1x1``` pixel and transposing it through an ```8x8``` filter which will give us an ```8``` times UpSampling. We'll wrap up with a ```softmax``` activation layer to give every pixel a classification.
+
+```
+  # upsample up to the size of the original image
+  o = tf.keras.layers.Conv2DTranspose(n_classes , kernel_size=(8,8) ,  strides=(8,8) , use_bias=False )(o)
+
+  # append a softmax to get the class probabilities
+  o = (tf.keras.layers.Activation('softmax'))(o)
+```
+
+##### Final model
+Now our model is quite straightforward to define. With the functional API, you create an instance of tf.Keras.model, passing it our inputs and our outputs. We'll define our inputs as a layer that takes into ```224x224x3```. Next, we'll create the ```VGG-16``` convolutional layers and initialize them within the function with pre-learned weights. And follow these with the decoder layer giving us an output. And then we just use these to create the model. 
+
+```
+def segmentation_model():
+  '''
+  Defines the final segmentation model by chaining together the encoder and decoder.
+
+  Returns:
+    keras Model that connects the encoder and decoder networks of the segmentation model
+  '''
+  
+  inputs = tf.keras.layers.Input(shape=(224,224,3,))
+  convs = VGG_16(image_input=inputs)
+  outputs = fcn8_decoder(convs, 12)
+  model = tf.keras.Model(inputs=inputs, outputs=outputs)
+  
+  return model
+
+```
+
+### Hyperparameters
+We will use ```categorical_crossentropy``` as the loss function since the label map is transformed to ```one hot encoded vectors``` for each pixel in the image (i.e. ```1``` in one slice and ```0``` for other slices as described earlier). We will also use ```Stochastic Gradient Descent``` as the optimizer.
+
+```
+sgd = tf.keras.optimizers.SGD(lr=1E-2, momentum=0.9, nesterov=True)
+```
+
+
+#### Training
 
 
 #### 4.2.3 SegNet Architecture

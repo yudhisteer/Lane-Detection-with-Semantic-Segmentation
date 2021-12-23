@@ -889,6 +889,8 @@ model = simple_encoder_decoder()
 model.summary()
 ```
 
+We use ```Batch Normalisation``` after every convolution so as to minimize the ```Internal covariate Shift``` and consequently, will lead to better results.
+
 In summary, we have ```66,153``` trainable parameters. It is important to check that the last convolution with the softmax function output a shape similar to our input image - ```(80, 160, 3)```.
 
 <p align="center">
@@ -904,7 +906,7 @@ In summary, we have ```66,153``` trainable parameters. It is important to check 
 We choose a small ```batch size``` of ```16``` and a small learning rate ```0.001```. We will train the model with an epoch of ```30```:
 
 ```
-#--- tune hyperparameters
+#--- Tune hyperparameters
 batch_size = 16
 epochs = 30
 pool_size = (2, 2)

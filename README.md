@@ -958,8 +958,56 @@ Below is the results after training the basic encoder-decoder model for 10 epoch
 We reached an accuracy of ```86.97%``` for our training dataset and an accuracy of ```86.95%``` for the validation dataset. Although the accuracy is mediocre, we should remind ourselves that our model had only 2 layers in the encoder and decoder. Even with such a simple model we could reach accuracies greater than ```75%```.
 
 ##### Testing
+We will have an ```rgb_channel``` function whereby we will set a threshold to each pixel values.
 
+```
+#--- Function to set threshold for pixel values
+def rgb_channel(img, thresholding=False, thresh=230):
+    """Threshold the re-drawn images"""
+    image = np.copy(img)
+    if thresholding:
+        ret, image = cv2.threshold(image, thresh, 255, cv2.THRESH_BINARY)
+    R = image[:,:,0]
+    G = image[:,:,1]
+    B = image[:,:,2]
+    return R,G,B
+```
 
+We will then build a ```run``` function to act as a pipeline to test images. The function will:
+
+- Take an image as input and copyt it
+- Resize the input to match the model size
+- Call model.predict()
+- Extract R,G,B channels from prediction
+- Rescale to the original image size
+- Draw on the input image
+- Return the result
+
+```
+#--- Pipeline
+def run(input_image):
+    h,w,d = input_image.shape
+    network_image = input_image.copy() #--- Copy input image
+    network_image = cv2.resize(network_image, (160,80), interpolation=cv2.INTER_AREA) #--- Resize the input to match the model size
+    network_image = network_image[None,:,:,:]
+    prediction = model.predict(network_image)[0]*255 #--- Call model.predict() | We need to scale each pixel to 255
+    R,G,B = rgb_channel(prediction) #--- Extract R,G,B channels from prediction
+    blank = np.zeros_like(R).astype(np.uint8)
+    lane_image = np.dstack((R,blank,B)) #--- Do not display green pixel for background
+    lane_image = cv2.resize(lane_image, (w,h)) #--- Rescale to the original image size
+    result = cv2.addWeighted(input_image, 1, lane_image.astype(np.uint8), 1, 0) #--- Draw on the input image
+    return result
+```
+
+We will randomly pick an image from our dataset and display the prediction along with its label:
+
+<p align="center">
+  <img src= "https://user-images.githubusercontent.com/59663734/147266506-ab42c987-faa7-463e-b46f-b730372e3588.png" />
+</p>
+
+**Note:** The model was succesfull in differentiating the lanes and the background. However, it predicted all the lanes to be the driveable one. It failed to predict the adjacent lanes(blue). We just had some faint blue pixels on the left. With such a simple model, it can be justified that it could not have a correct prediction. But still, it was able to make correct predictions for the road which is still awesome!
+
+We will now need to build a more complex model, with more parameters to improve our accuracy to make better predictions.
 
 
 

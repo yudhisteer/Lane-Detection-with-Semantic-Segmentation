@@ -948,11 +948,9 @@ history = model.fit(datagen.flow(X_train, y_train, batch_size=batch_size), steps
 ```
 
 #### 4.2.2 FCN-8 Architecture
-Remember that for the Encoder part of our model, the latter only extract features just as a normal CNN. As such, the FCN uses ```VGG16``` for its encoder. Therefore , we will use a pretrained ```VGG-16``` network for the feature extraction path, then followed by an ```FCN-8``` network for upsampling and generating the predictions. 
-
+The original Fully Convolutional Network (FCN) learns a mapping from pixels to pixels, without extracting the region proposals. Contrary to CNNs, FCNs only have convolutional and pooling layers which give them the ability to make predictions on arbitrary-sized inputs. Remember that for the Encoder part of our model, the latter only extract features just as a normal CNN. As such, the FCN uses ```VGG16``` for its encoder. Therefore , we will use a pretrained ```VGG-16``` network for the feature extraction path, then followed by an ```FCN-8``` network for upsampling and generating the predictions. 
 
 **Note:**
-
 ```VGG-16```: This Oxford’s model won the 2013 ImageNet competition with ```92.7%``` accuracy. It uses a stack of convolution layers with **small receptive fields** in the first layers instead of few layers with **big receptive fields**.
 
 
@@ -995,6 +993,7 @@ Remember that for the Encoder part of our model, the latter only extract feature
 14. https://www.youtube.com/watch?v=Z9nCBtaEb_g
 15. https://nanonets.com/blog/semantic-image-segmentation-2020/
 16. https://towardsdatascience.com/deep-learning-for-object-detection-a-comprehensive-review-73930816d8d9
+17. https://nanonets.com/blog/how-to-do-semantic-segmentation-using-deep-learning/
 
 
 

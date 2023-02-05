@@ -776,7 +776,7 @@ We will use the ```One Hot vector``` solution whereby we set the background to a
 
 We create a copy our our array ```labels``` and an empty list ```new_labels``` in which we will append our processed labelled image. We loop through each label and through each pixel in that label and if the label has a value of ```[0,0,0]```(black) we set it to ```[0,1,0]``` where ```1``` represents the new value of the pixel in the the Green channel of RGB.
 
-```
+```python
 #--- Convert background pixel to green
 ori_labels = labels.copy() #---Create copy or original label data so as labels are not affected
 new_labels = [] #--- Processed labels will be appended
@@ -804,14 +804,15 @@ The advantage of setting our background to green is that the neural network will
  
  We start by creating a function and use cv2.flip to flip the image only vertically and NOT horizontally:
  
- ```
+ ```python
 #--- Function to flip image vertically
 def flip_image(img):
     return cv2.flip(img, 1)
  ```
 
 We create two empty lists to store our augmented images and labels. 
-```
+
+```python
 #--- Empty lists to store augmented images and labels
 flipped_images = []
 flipped_labels = []
@@ -825,7 +826,7 @@ for i in labels:
 ```
 We will then merge our original datasets and the augmented ones using ```.extend``` method:
 
-```
+```python
 #--- Merge original datasets and augemneted datasets
 images.extend(flipped_images)
 new_labels.extend(flipped_labels)
@@ -844,7 +845,7 @@ We will now slit our dataset into **training** and **validation** datasets.
 
 We convert our datasets into an ```ndarray``` such that the image and label dataset is of dimension ```(6000, 80, 160, 3)```. That is we have ```6000``` images of size ```160 x 80``` with ```3``` channels. We then shuffle our image and label datasets accordingly. Using ```Sklearn``` library, we will import the ```train_test_split``` function and set our test size to be 15% of our original datasets. 
 
-```
+```python
 # Test size may go from 10% to 30%
 X_train, X_val, y_train, y_val = train_test_split(images, labels, test_size=0.15)
 ```
@@ -875,7 +876,7 @@ The architecture is shown below:
 </p>
 
 
-```
+```python
 def simple_encoder_decoder(input_shape=(80,160,3), pool_size=(2,2)):
 
     ''' #--- Encoder'''
@@ -920,7 +921,7 @@ In summary, we have ```66,153``` trainable parameters. It is important to check 
 ##### Hyperparameters
 We choose a small ```batch size``` of ```16``` and a small learning rate ```0.001```. We will train the model with an epoch of ```30```:
 
-```
+```python
 #--- Tune hyperparameters
 batch_size = 16
 epochs = 30
@@ -935,7 +936,7 @@ print(input_shape)
 
 We will use the ```ImageDataGenerator``` to further augment our dataset. The technique will help us for images with shadows. Using ```adam``` optimizer and a ```categorizal crossentropy``` loss function since we have ```3``` classes we **compile** and **fit** the model.
 
-```
+```python
 #--- Channel shifts help with shadows slightly
 datagen = ImageDataGenerator(channel_shift_range=0.2)
 
@@ -960,7 +961,7 @@ We reached an accuracy of ```86.97%``` for our training dataset and an accuracy 
 ##### Testing
 We will have an ```rgb_channel``` function whereby we will set a threshold to each pixel values.
 
-```
+```python
 #--- Function to set threshold for pixel values
 def rgb_channel(img, thresholding=False, thresh=230):
     """Threshold the re-drawn images"""
@@ -983,7 +984,7 @@ We will then build a ```run``` function to act as a pipeline to test images. The
 - Draw on the input image
 - Return the result
 
-```
+```python
 #--- Pipeline
 def run(input_image):
     h,w,d = input_image.shape
@@ -1042,7 +1043,7 @@ Note that we suppressed the FC layers in a classic VGG16 network and replaced it
 
 We start by creating a funcrtion called ```block``` which will loop through the number of convolutions, creating a Conv2D layer with the required number of filters, kernel size and activation. This is then followed by a pooling layer with a specified pool size and strides. 
 
-```
+```python
 def block(x, n_convs, filters, kernel_size, activation, pool_size, pool_stride, block_name):
   '''
   Defines a block in the VGG network.
@@ -1070,7 +1071,7 @@ def block(x, n_convs, filters, kernel_size, activation, pool_size, pool_stride, 
 
 We have ```5``` main blocks in our network therefore, we will chain five calls to this function.  So our first block **p1** will have two convolution layers, with ```64``` filters each followed by a two by two pooling Our second block called **p2** is similar but instead we'll have a ```128``` filters in each of the convolutional layers. And similarly the other three blocks are created by a call to the block function specifying ```256```, ```512``` and ```512``` filters respectively.
 
-```
+```python
 def VGG_16(image_input):
   '''
   This function defines the VGG encoder.
@@ -1139,7 +1140,7 @@ Upscaling can then add width and height to the data in the same way as applying 
 
 The layer before that is ```F4```, which will also refer to as ```o2``` for consistency with the o in the previous layer. We'll pass this through ```1x1``` filter to get us to the right number of classes for this image. So now we have own ```o2``` which we can merge together.
 
-```
+```python
 def fcn8_decoder(convs, n_classes):
   '''
   Defines the FCN 8 decoder.
@@ -1171,7 +1172,7 @@ The next step is to get the results that we just got from  ```Pool 4``` and ```P
 
 The pattern is the same. The previous layer which was the summation of Pools, ```4``` and ```5``` is called ```o```, so we'll follow that with a Conv2D transpose to upscale it. We'll pass it through a cropping layer to remove any excess pixels from the borders. The third layer Pooled output is at ```f3```. So if we follow that by a convolutional layer that has a ```1x1``` filter and ```n``` number of classes of them, we will reduce its dimensionality to the number of classes that we want to segment. And then we'll just add up the result of these two layers.
 
-```
+```python
   # upsample the resulting tensor of the operation you just did
   o = (tf.keras.layers.Conv2DTranspose( n_classes , kernel_size=(4,4) ,  strides=(2,2) , use_bias=False ))(o)
   o = tf.keras.layers.Cropping2D(cropping=(1, 1))(o)
@@ -1187,7 +1188,7 @@ The pattern is the same. The previous layer which was the summation of Pools, ``
 Our last step is to take our current some value and upscale it by ```8x```.
 With the key being the kernel size, it's taking a ```1x1``` pixel and transposing it through an ```8x8``` filter which will give us an ```8``` times UpSampling. We'll wrap up with a ```softmax``` activation layer to give every pixel a classification.
 
-```
+```python
   # upsample up to the size of the original image
   o = tf.keras.layers.Conv2DTranspose(n_classes , kernel_size=(8,8) ,  strides=(8,8) , use_bias=False )(o)
 
@@ -1198,7 +1199,7 @@ With the key being the kernel size, it's taking a ```1x1``` pixel and transposin
 ##### Final model
 Now our model is quite straightforward to define. With the functional API, you create an instance of tf.Keras.model, passing it our inputs and our outputs. We'll define our inputs as a layer that takes into ```224x224x3```. Next, we'll create the ```VGG-16``` convolutional layers and initialize them within the function with pre-learned weights. And follow these with the decoder layer giving us an output. And then we just use these to create the model. 
 
-```
+```python
 def segmentation_model():
   '''
   Defines the final segmentation model by chaining together the encoder and decoder.
@@ -1219,7 +1220,7 @@ def segmentation_model():
 ### Hyperparameters
 We will use ```categorical_crossentropy``` as the loss function since the label map is transformed to ```one hot encoded vectors``` for each pixel in the image (i.e. ```1``` in one slice and ```0``` for other slices as described earlier). We will also use ```Stochastic Gradient Descent``` as the optimizer.
 
-```
+```python
 sgd = tf.keras.optimizers.SGD(lr=1E-2, momentum=0.9, nesterov=True)
 ```
 
